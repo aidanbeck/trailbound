@@ -2,6 +2,7 @@ package com.aidanbeck.trailbound.models
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 class WorldTest {
@@ -14,9 +15,16 @@ class WorldTest {
         world.setTile(1, 3, 'b')
         world.setTile(9, 9, 'c')
 
+        world.setTile(-1, -1, 'd')
+        world.setTile(20, 80, 'e')
+
         assertEquals('a', world.getTile(0, 0))
         assertEquals('b', world.getTile(1, 3))
         assertEquals('c', world.getTile(9, 9))
+
+        assertNotEquals('d', world.getTile(-1, -1))
+        assertNotEquals('e', world.getTile(20, 80))
+
     }
 
     @Test
