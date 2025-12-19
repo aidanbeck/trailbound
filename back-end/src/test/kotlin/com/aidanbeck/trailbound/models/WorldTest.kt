@@ -38,7 +38,7 @@ class WorldTest {
         assertTrue(world.tiles.contains('z'))
 
         assertFalse(world.tiles.contains('A'))
-        
+
         // This is not a very good test!
         // But I don't know exactly what algorithm I will be using
         // I at least want to make sure it populates the world with *something*
