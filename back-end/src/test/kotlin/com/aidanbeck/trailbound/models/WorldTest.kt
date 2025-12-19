@@ -2,6 +2,7 @@ package com.aidanbeck.trailbound.models
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
@@ -29,9 +30,15 @@ class WorldTest {
 
     @Test
     fun testPopulateTiles() {
-        val world = World(10,10)
+        val world = World()
+        world.populateTiles("xyz")
 
-        assertTrue( world.tiles.contains('t'))
+        assertTrue(world.tiles.contains('x'))
+        assertTrue(world.tiles.contains('y'))
+        assertTrue(world.tiles.contains('z'))
+
+        assertFalse(world.tiles.contains('A'))
+        
         // This is not a very good test!
         // But I don't know exactly what algorithm I will be using
         // I at least want to make sure it populates the world with *something*
