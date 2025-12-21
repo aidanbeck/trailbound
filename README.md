@@ -1,5 +1,6 @@
-# TRAILBOUND
-a multiplayer hiking game written in Kotlin by aidanbeck.com
+# TRAILBOUND TrailBound trailbound trailBound trail-bound
+A multiplayer hiking game written in Kotlin by aidanbeck.com.
+Carve meticulous trails through a dense forest with your friends to unravel its mysteries!
 
 ## Purpose
 My capstone portfolio project [Old Cove](https://github.com/aidanbeck/old-cove) has a Spring Boot back end, but is very front end heavy, and doesn't even deploy all its features for its demo.
@@ -25,15 +26,15 @@ This Guest User system will allow new users and their friends to jump right in, 
 **Worlds & Game Design**
 
 A world will consist of a 256 x 256 manipulatable grid of tiles, representing a forest.
-The obstructions will generate in thick formations, with small pockets of empty space nearly connected to each other.
-Special tiles will also generate sporadically, representing resources, which will regenerate in 20 hours if consumed.
-A user can:
+The obstructions will generate in thick formations, with small pockets of empty space disconnected from but neighboring each other.
+Special tiles will also generate sporadically, representing resources, which will regenerate in 20 hours if consumed by a character.
+Characters are entities controlled by users. A character can:
 - move between unobstructed tiles
 - spend energy to dismantle obstructions (trees, rocks, ponds, bushes)
 - consume special tiles to regain energy (berries, nuts, mushrooms, roots)
 
-The primary user loop will be choosing precise cuts to connect nearby clearings, allowing for further exploration and resource discovery.
-An extrinsic objective may be added to motivate this exploration, such as reaching the edge, reaching the center, or collecting a set of MacGuffins around the world.
+The primary user story will be choosing precise cuts to connect nearby clearings, allowing for further exploration and resource discovery, enabling additional cuts to repeat the cycle.
+An extrinsic objective may be added to motivate this exploration, such as reaching the edge, reaching the center, or collecting a set of artifacts around the world.
 If user testing proves this core loop compelling, many other features and objectives could be added and expanded.
 
 
