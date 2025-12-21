@@ -1,7 +1,7 @@
 # TrailBound
 A multiplayer hiking game written in Kotlin by aidanbeck.com.
 
-Carve meticulous trails through a dense forest with your friends to unravel its mysteries!
+Carve meticulous trails through a dense & mysterious forest- with friends!
 
 ## Purpose
 My capstone portfolio project [Old Cove](https://github.com/aidanbeck/old-cove) has a Spring Boot back end, but is very front end heavy, and doesn't even deploy all its features for its demo.
