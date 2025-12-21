@@ -8,6 +8,10 @@ My capstone portfolio project [Old Cove](https://github.com/aidanbeck/old-cove) 
 I want to illustrate my skills by creating a project with a deployed server and a focus on back end features.
 The front end will be minimal but serviceable, and will be replaced if user testing proves the design compelling and continuation promising.
 
+This should be a short project. I want a gameplay prototype working before 2026, where I will test it with my friend groups.
+I will use input from testing to polish the experience throughout January.
+If my friends find the experience especially compelling, I will spend additional time to include more features and polish.
+
 ## Design Outline - Minimum Viable Product
 
 **Registered Users & Guests**
@@ -38,7 +42,6 @@ The primary user story will be choosing precise cuts to connect nearby clearings
 An extrinsic objective may be added to motivate this exploration, such as reaching the edge, reaching the center, or collecting a set of artifacts around the world.
 If user testing proves this core loop compelling, many other features and objectives could be added and expanded.
 
-
 ## Tech Stack
 
 **Server**
@@ -67,3 +70,36 @@ Later, if testing proves the project worth investing in, this will be redesigned
 - pixel art graphics representing each tile
 - animations for button presses and state changes
 - curated color and shape design for the UI
+
+
+# Technical Blueprints - Class Outlines
+
+This project can be split into two halves.
+There is the User, Registration, Guest, and World dashboard / creation side of the project.
+There is also the World Gameplay & Character side of the project.
+
+For my initial pre-2026 prototyping, I will focus on the latter half, and only implement guest characters and worlds hosted by me.
+These are some class outlines for the functionality.
+
+**World**
+- width
+- length
+- URL / game Pin
+- generationTable
+- seed
+- players
+- tiles
+* getTile
+* setTile
+* populateTiles
+
+**Hiker**
+- x, y
+- symbol
+- pinNumber
+- energy
+- specialCountdowns
+* move
+* chop
+* use
+* getNearbyTiles
