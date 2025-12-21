@@ -1,5 +1,6 @@
-# TRAILBOUND TrailBound trailbound trailBound trail-bound
+# TrailBound
 A multiplayer hiking game written in Kotlin by aidanbeck.com.
+
 Carve meticulous trails through a dense forest with your friends to unravel its mysteries!
 
 ## Purpose
