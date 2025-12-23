@@ -2,7 +2,7 @@ package com.aidanbeck.trailbound.models
 
 import kotlin.random.Random
 
-class World(val width: Int = 256, val length: Int = 256, val gamePin: Int = 0) {
+class World(val width: Int = 256, val length: Int = 256, val gamePin: Int = 0, val generationTable: String = "..,ttTTT") {
 
     val URL = "ABCXYZ"
     val seed = 10072003
@@ -11,7 +11,7 @@ class World(val width: Int = 256, val length: Int = 256, val gamePin: Int = 0) {
     val tiles = Array<Char>(width * length) { '.' }
 
     init {
-        populateTiles("..,ttTTT")
+        populateTiles(generationTable)
     }
 
     fun getTile(x: Int, y: Int): Char {
