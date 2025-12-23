@@ -99,7 +99,10 @@ These are some class outlines for the functionality.
 - pinNumber
 - energy
 - specialCountdowns
-* move
-* chop
-* use
-* getNearbyTiles
+* move(xOffset, yOffset, world)
+* chop(xOffset, yOffset, world)
+* use(xOffset, yOffset, world)
+* getNearbyTiles(world)
+
+World will be passed to the Hiker methods within the World's REST controller
+ie, on an update request on world, it will run something like world.players[i].move(1, 0, world)
