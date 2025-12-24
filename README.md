@@ -81,28 +81,35 @@ There is also the World Gameplay & Character side of the project.
 For my initial pre-2026 prototyping, I will focus on the latter half, and only implement guest characters and worlds hosted by me.
 These are some class outlines for the functionality.
 
-**World**
-- width
-- length
-- URL / game Pin
-- generationTable
-- seed
-- players
-- tiles
-* getTile
-* setTile
-* populateTiles
+**World Class**
+- slug: unique id, game pin, and url slug for joining a world
+- width, length: dimensions of the grid
+- generationTable: a string of characters representing tile distribution. ie "..tTTT"
+- seed: used for consistent random generation. Especially useful for unit testing
+- tiles: a 1D array of Chars, accessed as a grid by offset indexing
+- playerCharacters: Array of PlayerCharacter objects
+* getTile(x, y): uses offset indexing to return the Char at (x,y) from tiles. If off grid, return a constant "border" character.
+* setTile(x, y, char): uses offset indexing to set a Char at (x,y) in tiles. Throw an exception if off grid
+* populateTiles(generationTable, seed): fill tiles based on the generationTable and seed. Then apply some rules similar to Conway's Game of Life to shape the generation. This won't be precisely tested, and might be massively changed.
+* addPlayer(name, symbol, pinNumber): initializes PlayerCharacter, sets appropriate coordinates in world, and adds to World's playerCharacters array. If a player already exists with that name, throw an exception.
+* removePlayer(name): remove a player with that name from the array. Adjust array 
+* getPlayer(name): returns PlayerCharacter with that name from playerCharacters
 
-**Hiker**
-- x, y
-- symbol
-- pinNumber
-- energy
-- specialCountdowns
-* move(xOffset, yOffset, world)
-* chop(xOffset, yOffset, world)
-* use(xOffset, yOffset, world)
-* getNearbyTiles(world)
+**PlayerCharacter Class**
+- name: unique string (within it's world)
+- symbol: a Char used as the "skin" of a character. Limited to: ♔♕♖♗♘♙ ♚♛♜♝♞♟ ♡♢♤♧ ♠♥♦♣
+pinNumber
+- x, y: Coordinates representing position on the grid
+- energy: number of tiles the player can break. Increased when resources are consumed, decreased when a block is broken.
+- input(directionString, world): recieves an input "n", "s", "e", or "w", as well as a reference to World. Detects what tile exists in that direction from the player, and depending on the tile, calls move, break, or take.
+- move(xOffset, yOffset, world): moves the player's x and y by an offset. Throw an exception if obstructed.
+- break(xOffset, yOffset, world): replaces the offset position's tile with the destroyed version. If nothing can break, throw an exception.
+- take(xOffset, yOffset, world): breaks the offset position's tile, and increases the player's energy by a set amount per tile type. If nothing can be taken, throw an exception.
+- getNearbyTiles(world, squareRadius): returns a string of characters representing the tiles in a square radius around the player. Overwrite any tiles with a PlayerCharacter's symbol if it exists there.
 
-World will be passed to the Hiker methods within the World's REST controller
-ie, on an update request on world, it will run something like world.players[i].move(1, 0, world)
+**REST Implementation**
+- only save World to a database. PlayerCharacters should be saved within World.
+- only make a REST controller for World, with Player as a sub directory.
+- "authorize" player requests by requiring the playerCharacter's Pin number
+- on the client, do a general nearbyTiles request every half second. (For now, eventually optimize or use websockets)
+- World will access player methods via `world.players[i].move(1, 0, world)
