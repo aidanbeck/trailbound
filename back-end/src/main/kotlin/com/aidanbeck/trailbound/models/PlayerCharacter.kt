@@ -1,6 +1,6 @@
 package com.aidanbeck.trailbound.models
 
-class Player(
+class PlayerCharacter(
     val x: Int = 0,
     val y: Int = 0,
     val symbol: Char = '&',

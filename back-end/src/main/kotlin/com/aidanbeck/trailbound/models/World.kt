@@ -7,7 +7,7 @@ class World(val width: Int = 256, val length: Int = 256, val gamePin: Int = 0, v
     val URL = "ABCXYZ"
     val seed = 10072003
 
-    val players = Array<Player>(32) { Player() }
+    val playerCharacters = Array<PlayerCharacter>(32) { PlayerCharacter() }
     val tiles = Array<Char>(width * length) { '.' }
 
     init {
