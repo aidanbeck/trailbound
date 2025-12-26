@@ -2,16 +2,19 @@ package com.aidanbeck.trailbound.models
 
 import kotlin.random.Random
 
-class World(val width: Int = 256, val length: Int = 256, val gamePin: Int = 0, val generationTable: String = "..,ttTTT") {
+class World(
+    val width: Int = 256,
+    val length: Int = 256,
+    val generationTable: String = "..,ttTTT",
+    val seed: Int = 10072003 // my birthday, no other significance
+) {
 
-    val URL = "ABCXYZ"
-    val seed = 10072003
-
+    val slug = "ABCXYZ" // unique id
     val playerCharacters = Array<PlayerCharacter>(32) { PlayerCharacter() }
     val tiles = Array<Char>(width * length) { '.' }
 
     init {
-        populateTiles(generationTable)
+        populateTiles(generationTable, seed)
     }
 
     fun getTile(x: Int, y: Int): Char {
@@ -27,7 +30,7 @@ class World(val width: Int = 256, val length: Int = 256, val gamePin: Int = 0, v
         tiles[width * y + x] = char
     }
 
-    fun populateTiles(chanceTable: String) {
+    fun populateTiles(chanceTable: String, generationSeed: Int) {
 
         val random = Random(seed)
 
@@ -39,5 +42,9 @@ class World(val width: Int = 256, val length: Int = 256, val gamePin: Int = 0, v
             }
         }
     }
+
+    fun addPlayer(name: String, symbol: Char, pinNumber: Int): PlayerCharacter { return PlayerCharacter() }
+    fun getPlayer(name: String): PlayerCharacter { return PlayerCharacter() }
+    fun removePlayer(name: String) {}
 
 }
