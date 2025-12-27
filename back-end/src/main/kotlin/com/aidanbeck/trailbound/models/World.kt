@@ -10,7 +10,7 @@ class World(
 ) {
 
     val slug = "ABCXYZ" // unique id
-    val playerCharacters = Array<PlayerCharacter>(32) { PlayerCharacter() }
+    val playerCharacters = Array<PlayerCharacter?>(32) { null }
     val tiles = Array<Char>(width * length) { '.' }
 
     init {
@@ -30,7 +30,7 @@ class World(
         tiles[width * y + x] = char
     }
 
-    fun populateTiles(chanceTable: String, generationSeed: Int) {
+    fun populateTiles(chanceTable: String, generationSeed: Int = seed) {
 
         val random = Random(seed)
 
@@ -43,8 +43,8 @@ class World(
         }
     }
 
-    fun addPlayer(name: String, symbol: Char, pinNumber: Int): PlayerCharacter { return PlayerCharacter() }
-    fun getPlayer(name: String): PlayerCharacter { return PlayerCharacter() }
+    fun addPlayer(name: String, symbol: Char = '&', pinNumber: Int? = null): PlayerCharacter { return PlayerCharacter("TEST") }
+    fun getPlayer(name: String): PlayerCharacter { return PlayerCharacter("TEST") }
     fun removePlayer(name: String) {}
 
 }
