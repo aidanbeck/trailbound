@@ -67,7 +67,7 @@ class WorldTest {
 
         assertFailsWith<IllegalArgumentException> { world.addPlayer("Hiker") } // throw exception if player already exists
 
-         throw exception if array is full
+        //throw exception if array is full
         for (i in 0 .. world.playerCharacters.size - 1) { // fill remaining slots
             if (world.playerCharacters[i] == null) { world.addPlayer("Player$i") }
         }
