@@ -74,4 +74,23 @@ class WorldTest {
         assertFailsWith<IllegalStateException> { world.addPlayer("NoMoreRoom") }
 
     }
+
+    @Test
+    fun testGetPlayer() {
+        val world = World()
+        val player = world.addPlayer("Hiker")
+
+        assertEquals("Hiker", world.getPlayer("Hiker").name )
+        assertFailsWith<NoSuchElementException> { world.getPlayer("NonexistentName") }
+    }
+
+    @Test
+    fun testRemovePlayer() {
+        val world = World()
+        val player = world.addPlayer("Hiker")
+        assertTrue ( world.playerCharacters.contains(player) ) // assert player was actually added to be removed
+        world.removePlayer("Hiker")
+        assertFalse( world.playerCharacters.contains(player) )
+    }
+
 }
