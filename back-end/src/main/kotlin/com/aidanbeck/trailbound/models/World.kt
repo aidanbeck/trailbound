@@ -101,7 +101,7 @@ class World(
     This could prevent awkward looping to find a player slot or specific player.
 
     Throwing basic errors is not the best practice. I should learn more about Error Types, and use more appropriate errors.
-    
+
     My Unit Tests should also be broken up into multiple tests that each test a unique aspect of a function.
     They should also test that players are properly initialized with more than just the player name.
  */
