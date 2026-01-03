@@ -79,6 +79,29 @@ class World(
         throw Error("Cannot find player character '$name'!")
     }
 
-    fun removePlayerCharacter(name: String) {}
+    fun removePlayerCharacter(name: String) {
+        for (i in 0..playerCharacters.size) {
+            if (playerCharacters[i]?.name == name) {
+                playerCharacters[i] = null
+                return
+            }
+        }
+
+        throw Error("Cannot remove player character '$name', they do not exist!")
+    }
 
 }
+
+/*
+    *Improvement Notes*
+
+    Storing 32 player slots in a basic array might not be the best solution.
+    It could be harder to store in a database, and it is harder to loop through.
+    It could be better to store Players as their own Entity and relate World entities to Player entities.
+    This could prevent awkward looping to find a player slot or specific player.
+
+    Throwing basic errors is not the best practice. I should learn more about Error Types, and use more appropriate errors.
+    
+    My Unit Tests should also be broken up into multiple tests that each test a unique aspect of a function.
+    They should also test that players are properly initialized with more than just the player name.
+ */
