@@ -1,5 +1,6 @@
 package com.aidanbeck.trailbound.models
 
+import org.springframework.data.repository.query.ParameterOutOfBoundsException
 import kotlin.random.Random
 
 class World(
@@ -26,7 +27,9 @@ class World(
 
     fun setTile(x: Int, y: Int, char: Char) {
 
-        if (x < 0 || x > width || y < 0 || y > length) return // out of bounds
+        if (x < 0 || x > width || y < 0 || y > length) { // out of bounds
+            throw Error("Coordinate ($x,$y) is out of bounds!")
+        }
         tiles[width * y + x] = char
     }
 
