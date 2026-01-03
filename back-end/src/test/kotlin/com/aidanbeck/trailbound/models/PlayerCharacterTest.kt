@@ -22,7 +22,7 @@ class PlayerCharacterTest {
     fun testMove() {
         val world = World(generationTable = ".,")
         val playerCharacter = PlayerCharacter("Hiker")
-        world.setTile (2, 0, 't')
+        world.setTile(2, 0, 't')
 
         playerCharacter.move(1, 0, world)
         assertFailsWith<Error> { playerCharacter.move(1, 0, world) } // should hit tree
@@ -33,7 +33,19 @@ class PlayerCharacterTest {
         assertEquals(playerCharacter.y, 1)
     }
 
-//    - dismantle(xOffset, yOffset, world): replaces the offset position's tile with the destroyed version. If nothing can break, throw an exception.
+    @Test
+    fun testDismantle() {
+        val world = World(generationTable = ".,")
+        val playerCharacter = PlayerCharacter("Hiker")
+        world.setTile(1, 0, 't')
+
+        playerCharacter.dismantle(1, 0, world)
+        assertFailsWith<Error> { playerCharacter.dismantle(0, 1, world) } // cannot dismantle ground
+        assertFailsWith<Error> { playerCharacter.move(0, -1, world) } // cannot dismantle border
+
+        assertEquals(world.getTile(1, 0), ',')
+    }
+
 //    - take(xOffset, yOffset, world): breaks the offset position's tile, and increases the player's energy by a set amount per tile type. If nothing can be taken, throw an exception.
 //    - getNearbyTiles(world, squareRadius): returns a string of characters representing the tiles in a square radius around the player. Overwrite any tiles with a PlayerCharacter's symbol if it exists there.
 
