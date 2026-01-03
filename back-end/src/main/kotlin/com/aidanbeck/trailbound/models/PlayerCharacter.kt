@@ -2,8 +2,8 @@ package com.aidanbeck.trailbound.models
 
 class PlayerCharacter(
     val name: String,
-    val pinNumber: Int? = null, // Null = no pin, character isn't locked.
     val symbol: Char = '&',
+    val pinNumber: Int? = null, // Null = no pin, character isn't locked.
     var x: Int = 0,
     var y: Int = 0,
     var energy: Int = 4

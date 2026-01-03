@@ -46,8 +46,29 @@ class World(
         }
     }
 
-    fun addPlayer(name: String, symbol: Char = '&', pinNumber: Int? = null): PlayerCharacter { return PlayerCharacter("TEST") }
-    fun getPlayer(name: String): PlayerCharacter { return PlayerCharacter("TEST") }
-    fun removePlayer(name: String) {}
+    fun addPlayerCharacter(name: String, symbol: Char = '&', pinNumber: Int? = null): PlayerCharacter {
+
+        val playerCharacter = PlayerCharacter(name, symbol, pinNumber)
+
+        // verify name is unique
+        for (player in playerCharacters) {
+            if (player?.name == name) { throw Error("Player character $name already exists!") }
+        }
+
+        // find next available slot
+        for (i in 0..playerCharacters.size - 1) {
+            if (playerCharacters[i] == null) {
+
+                playerCharacters.set(i, playerCharacter)
+                return playerCharacter
+            }
+        }
+
+        throw Error("There are no remaining player character slots!")
+
+    }
+
+    fun getPlayerCharacter(name: String): PlayerCharacter { return PlayerCharacter("TEST") }
+    fun removePlayerCharacter(name: String) {}
 
 }

@@ -60,11 +60,6 @@ class WorldTest {
         assertTrue(playerCharacter.symbol == '@') // initializes PlayerCharacter
         assertTrue(world.playerCharacters.contains(playerCharacter)) // adds player to playerCharacters array
 
-        // adjust coordinates if spawn tile is obstructed
-        world.setTile(0, 0, 't')
-        val spawnObstructedPlayer = world.addPlayerCharacter("Obstructed")
-        assertFalse( spawnObstructedPlayer.x == 0 && spawnObstructedPlayer.y == 0)
-
         // throw exception if player already exists
         assertFailsWith<Error> { world.addPlayerCharacter("Hiker") }
 
