@@ -52,7 +52,7 @@ class World(
 
         // verify name is unique
         for (player in playerCharacters) {
-            if (player?.name == name) { throw Error("Player character $name already exists!") }
+            if (player?.name == name) { throw Error("Player character '$name' already exists!") }
         }
 
         // find next available slot
@@ -68,7 +68,17 @@ class World(
 
     }
 
-    fun getPlayerCharacter(name: String): PlayerCharacter { return PlayerCharacter("TEST") }
+    fun getPlayerCharacter(name: String): PlayerCharacter {
+
+        for (playerCharacter in playerCharacters) {
+            if (playerCharacter?.name == name) {
+                return playerCharacter
+            }
+        }
+
+        throw Error("Cannot find player character '$name'!")
+    }
+
     fun removePlayerCharacter(name: String) {}
 
 }
