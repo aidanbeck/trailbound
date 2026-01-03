@@ -53,43 +53,44 @@ class WorldTest {
     }
 
     @Test
-    fun testAddPlayer() {
+    fun testAddPlayerCharacter() {
         val world = World()
-        val player = world.addPlayer("Hiker", '@')
+        val playerCharacter = world.addPlayerCharacter("Hiker", '@')
 
-        assertTrue(player.symbol == '@') // initializes PlayerCharacter
-        assertTrue(world.playerCharacters.contains(player)) // adds player to playerCharacters array
+        assertTrue(playerCharacter.symbol == '@') // initializes PlayerCharacter
+        assertTrue(world.playerCharacters.contains(playerCharacter)) // adds player to playerCharacters array
 
         // adjust coordinates if spawn tile is obstructed
         world.setTile(0, 0, 't')
-        val spawnObstructedPlayer = world.addPlayer("Obstructed")
+        val spawnObstructedPlayer = world.addPlayerCharacter("Obstructed")
         assertFalse( spawnObstructedPlayer.x == 0 && spawnObstructedPlayer.y == 0)
 
-        assertFailsWith<Error> { world.addPlayer("Hiker") } // throw exception if player already exists
+        // throw exception if player already exists
+        assertFailsWith<Error> { world.addPlayerCharacter("Hiker") }
 
         //throw exception if array is full
         for (i in 0 .. world.playerCharacters.size - 1) { // fill remaining slots
-            if (world.playerCharacters[i] == null) { world.addPlayer("Player$i") }
+            if (world.playerCharacters[i] == null) { world.addPlayerCharacter("PlayerCharacter$i") }
         }
-        assertFailsWith<Error> { world.addPlayer("NoMoreRoom") }
+        assertFailsWith<Error> { world.addPlayerCharacter("NoMoreRoom") }
 
     }
 
     @Test
-    fun testGetPlayer() {
+    fun testGetPlayerCharacter() {
         val world = World()
-        world.addPlayer("Hiker")
+        world.addPlayerCharacter("Hiker")
 
-        assertEquals("Hiker", world.getPlayer("Hiker").name )
-        assertFailsWith<Error> { world.getPlayer("NonexistentName") }
+        assertEquals("Hiker", world.getPlayerCharacter("Hiker").name )
+        assertFailsWith<Error> { world.getPlayerCharacter("NonexistentName") }
     }
 
     @Test
     fun testRemovePlayer() {
         val world = World()
-        val player = world.addPlayer("Hiker")
-        assertTrue ( world.playerCharacters.contains(player) ) // assert player was actually added to be removed
-        world.removePlayer("Hiker")
+        val player = world.addPlayerCharacter("Hiker")
+        assertTrue ( world.playerCharacters.contains(player) ) // assert player character was actually added to be removed
+        world.removePlayerCharacter("Hiker")
         assertFalse( world.playerCharacters.contains(player) )
     }
 
