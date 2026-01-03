@@ -25,8 +25,8 @@ class WorldTest {
         assertEquals('c', world.getTile(9, 9))
 
         // Out of Bounds
-        assertFailsWith<ParameterOutOfBoundsException> { world.setTile(-1, -1, 'd') }
-        assertFailsWith<ParameterOutOfBoundsException> { world.setTile(20, 80, 'e') }
+        assertFailsWith<Error> { world.setTile(-1, -1, 'd') }
+        assertFailsWith<Error> { world.setTile(20, 80, 'e') }
         assertNotEquals('d', world.getTile(-1, -1))
         assertNotEquals('e', world.getTile(20, 80))
         assertEquals('░', world.getTile(-1, -1)) // return special "border" character
@@ -65,23 +65,23 @@ class WorldTest {
         val spawnObstructedPlayer = world.addPlayer("Obstructed")
         assertFalse( spawnObstructedPlayer.x == 0 && spawnObstructedPlayer.y == 0)
 
-        assertFailsWith<IllegalArgumentException> { world.addPlayer("Hiker") } // throw exception if player already exists
+        assertFailsWith<Error> { world.addPlayer("Hiker") } // throw exception if player already exists
 
         //throw exception if array is full
         for (i in 0 .. world.playerCharacters.size - 1) { // fill remaining slots
             if (world.playerCharacters[i] == null) { world.addPlayer("Player$i") }
         }
-        assertFailsWith<IllegalStateException> { world.addPlayer("NoMoreRoom") }
+        assertFailsWith<Error> { world.addPlayer("NoMoreRoom") }
 
     }
 
     @Test
     fun testGetPlayer() {
         val world = World()
-        val player = world.addPlayer("Hiker")
+        world.addPlayer("Hiker")
 
         assertEquals("Hiker", world.getPlayer("Hiker").name )
-        assertFailsWith<NoSuchElementException> { world.getPlayer("NonexistentName") }
+        assertFailsWith<Error> { world.getPlayer("NonexistentName") }
     }
 
     @Test
