@@ -59,6 +59,27 @@ class PlayerCharacterTest {
         assertEquals('X', world.getTile(1, 0)) // bush replaced with empty bush
         assertEquals(4, playerCharacter.energy) // energy increased by 4 (replace with variable!)
     }
-//    - getNearbyTiles(world, squareRadius): returns a string of characters representing the tiles in a square radius around the player. Overwrite any tiles with a PlayerCharacter's symbol if it exists there.
 
+    @Test
+    fun testGetNearbyTiles() {
+        val world = World(generationTable = ".")
+        world.setTile(1, 0, 'A')
+        world.addPlayerCharacter("Hiker", '&')
+        world.addPlayerCharacter("Other", '@')
+        val player = world.getPlayerCharacter("Hiker")
+        val other = world.getPlayerCharacter("Other")
+        other.x = 2
+        other.x = 2
+
+        /*
+            ░░..@ <-- another player
+            ░░...
+            ░░&.A <-- an object tile
+            ░░░░░
+            ░░░░░
+         */
+        val nearbyTiles = "░░..@░░...░░&.A░░░░░░░░░░"
+
+        assertEquals(nearbyTiles, player.getNearbyTiles(world, 2))
+    }
 }
