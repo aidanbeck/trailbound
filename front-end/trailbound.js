@@ -1,4 +1,4 @@
-import Theatre from '../easel/Theatre.js';
+import Theatre from '../front-end/easel/Theatre.js';
 
 const tileSize = 16;
 const gridSize = 9;
