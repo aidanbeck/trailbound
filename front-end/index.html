@@ -1,83 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
- <style>
- 
-  #dPad {
-   display: grid;
-   grid-template-areas:
-    '. n .'
-    'w s e';
-    height: 15rem;
-  }
-
-  .n { grid-area: n; }
-  .s { grid-area: s; }
-  .w { grid-area: w; }
-  .e { grid-area: e; }
-
-  #grid, #energy {
-   font-family: monospace;
-   font-size: 2.5rem;
-   text-align: center;
-  }
-
-button {
-font-size: 4rem;
-border: 0px;
-background-color: white;
-color: black;
-margin: 4px;
-}
-
-button:active {
-background-color: black;
-color: white;
-}
-
- </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0"/>
+  <title>Trailbound</title>
+  <style>
+    html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    }
+  </style>
 </head>
 <body>
-
-<div id="energy"></div>
-<hr><div id="grid"></div><hr>
-<div id="dPad">
- <button class="n">🡅</button>
- <button class="s">🡇</button>
- <button class="w">🡄</button>
- <button class="e">🡆</button>
-</div>
-
-
+  <canvas id="theatre"></canvas>
+  <script type="module" src="trailbound.js" defer></script>
 </body>
-
-<script>
-
-let playerName = "";
-let playerPin = "";
-let createOrLogin = confirm("Welcome to TrailBound! Would you like to create a new character? If not, you will be prompted to log in to an existing character.");
-
-if (createOrLogin) {
- playerName = prompt("First, enter your character's name.");
- playerPin = prompt("Next, lock your character with a 6 digit PIN");
-} else {
- playerName = prompt("First, enter your character's name.");
- playerPin = prompt("Next, unlock your character with your 6 digit PIN");
-}
-
-const grid = document.getElementById("grid");
-for (let i = 0; i < 11; i++) {
- for (let j = 0; j < 11; j++) {
-  grid.innerHTML += " &"
- }
- grid.innerHTML += "<br>"
-}
-
-const energyBar = document.getElementById("energy");
-let energy = 5;
-for (let a = 0; a < 5; a++) {
- energyBar.innerHTML += "🪓";
-}
-
-</script>
+</html>
