@@ -13,6 +13,7 @@ theatre.makeFullScreen();
 theatre.shorterDimensionConsistent = true;
 theatre.canvas.style.backgroundColor = "#f8f9fa";
 theatre.ctx.imageSmoothingEnabled = false; //prevent image blurring
+canvasElement.style.imageRendering = 'pixelated'; //prevent image blurring;
 theatre.redraw = render;
 window.onload = () => { theatre.redraw(); }
 
