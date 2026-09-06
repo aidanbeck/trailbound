@@ -3,7 +3,6 @@ import Theatre from '../front-end/easel/Theatre.js';
 const tileSize = 16;
 const gridSize = 9;
 
-
 // Theatre Setup
 const canvasElement = document.getElementById("theatre");
 const theatre = new Theatre(canvasElement, tileSize * gridSize, tileSize * gridSize);
@@ -50,3 +49,6 @@ function getTileCoordinate(x, y) {
         y: Math.floor(y / tileSize)
     }
 }
+
+// const buffer = new Uint8Array([1, 2, 3, 4]);
+// socket.send(buffer);
