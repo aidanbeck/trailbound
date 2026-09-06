@@ -1,52 +1,36 @@
-import Theatre from '../front-end/easel/Theatre.js';
+import World from './World.js';
+import View from './View.js';
+import { TileType, FloorType, MobileType } from './Types.js';
+import Mobile from './Mobile.js';
 
-const tileSize = 16;
-const gridSize = 9;
+const world = new World();
+const view = new View();
 
-// Theatre Setup
-const canvasElement = document.getElementById("theatre");
-const theatre = new Theatre(canvasElement, tileSize * gridSize, tileSize * gridSize);
-const ctx = theatre.ctx;
-theatre.origin = "CENTER";
-theatre.makeFullScreen();
-theatre.shorterDimensionConsistent = true;
-theatre.canvas.style.backgroundColor = "#f8f9fa";
-theatre.ctx.imageSmoothingEnabled = false; //prevent image blurring
-theatre.redraw = render;
+const grass = new FloorType('grass.bmp');
+const darkGrass = new FloorType('darkGrass.bmp');
+const bush = new TileType('bush.png');
+const truck = new MobileType('truck.png');
 
-// Interaction
-theatre.addEventListener("pointerdown", () => {mouseDown = true});
-theatre.addEventListener("pointerup", () => {mouseDown = false});
-theatre.addEventListener("pointermove", pointerMove);
+world.floorTypes.push(grass, darkGrass);
+world.tileTypes.push(null, bush);
+world.mobileTypes.push(truck);
 
-// State
-let mouseDown = false;
+world.setFloor(0, 0, 1);
+world.setFloor(1, 1, 1);
+world.setFloor(2, 2, 1);
 
-function pointerMove(event) {
-    let {x, y} = theatre.getEventCoordinates(event);
-    
-    if (mouseDown) {
-    
-        const tile = getTileCoordinate(x, y);
-        ctx.clearRect(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize);
-    }
-}
+world.setTile(1, 1, 1);
 
-const gridPixelSize = gridSize * tileSize;
-function render() {
-    ctx.translate(-gridPixelSize/2, -gridPixelSize/2);
+world.createMobile(new Mobile(
+    2, 2, 0
+));
 
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            ctx.fillRect(i * tileSize, j * tileSize, tileSize, tileSize);
-        }
-    }
-}
+view.updateView(world);
 
-function getTileCoordinate(x, y) {
+export default function getState() {
     return {
-        x: Math.floor(x / tileSize),
-        y: Math.floor(y / tileSize)
+        world: world,
+        view: view
     }
 }
 

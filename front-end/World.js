@@ -1,4 +1,4 @@
-class World {
+export default class World {
     constructor(width = 256, height = 256) {
         
         this.tileTypes = [];
@@ -48,10 +48,18 @@ class World {
 
     setFloor(x, y, floor) {
         if (this.isOutOfBounds(x, y)) { return; } // todo throw error
-        this.tiles[y][x] = floor;
+        this.floors[y][x] = floor;
     }
 
-    getMobile(index) {}
-    createMobile(mobile) {}
-    removeMobile(index) {}
+    getMobile(index) {
+        return this.mobiles[index];
+    }
+    createMobile(mobile) {
+        this.mobiles.push(mobile);
+        // todo use free mobile indexes
+    }
+    removeMobile(index) {
+        this.mobiles[index] = null;
+        this.freeMobileIndexes.push(index);
+    }
 }
