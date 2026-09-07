@@ -27,7 +27,7 @@ export default class World {
 
     isOutOfBounds(x, y) {
         const coordinateIsNegative = x < 0 || y < 0;
-        const coordinateIsBeyond = x > this.width || y > this.height;
+        const coordinateIsBeyond = x >= this.width || y >= this.height;
         return coordinateIsNegative || coordinateIsBeyond;
     }
 

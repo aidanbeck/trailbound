@@ -10,6 +10,11 @@ export default class View {
         this.mobiles = [];
     }
 
+    setView(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
     updateView(world) {
 
         // clear arrays
@@ -23,8 +28,8 @@ export default class View {
 
         for (let i = startY; i < endY; i++) {
             for (let j = startX; j < endX; j++) {
-                this.tiles.push(world.getTile(i, j));
-                this.floors.push(world.getFloor(i, j));
+                this.tiles.push(world.getTile(j, i));
+                this.floors.push(world.getFloor(j, i));
             }
         }
 

@@ -29,20 +29,37 @@ function render() {
     for (let i = 0; i < GRID_SIZE; i++) {
         for (let j = 0; j < GRID_SIZE; j++) {
 
-            const floor = view.floors[i * GRID_SIZE + j];
-            const tile = view.tiles[i * GRID_SIZE + j];
+            const floor = view.floors[j * GRID_SIZE + i];
+            const tile = view.tiles[j * GRID_SIZE + i];
 
             const floorType = world.floorTypes[floor];
             const tileType = world.tileTypes[tile];
 
-            floorType.texture.draw(i * TILE_SIZE, j * TILE_SIZE, 0, ctx);
+            floorType && floorType.texture.draw(i * TILE_SIZE, j * TILE_SIZE, 0, ctx);
             tileType && tileType.texture.draw(i * TILE_SIZE, j * TILE_SIZE, 0, ctx);
+
+
         }
     }
 }
 
 function pointerDown(e) { mouseButton = e.button; }
-function pointerUp(e) { mouseButton = -1; }
+function pointerUp(e) {
+
+    if (mouseButton == 2 || event.type == 'dblclick') {
+        let {x, y} = theatre.getEventCoordinates(e);
+        let tile = getTileCoordinate(x, y, TILE_SIZE);
+
+        tile.x -= 4;
+        tile.y -= 4;
+
+        view.setView(tile.x, tile.y);
+        view.updateView(world);
+        render();
+    }
+
+    mouseButton = -1;
+}
 function pointerMove(e) {
     let {x, y} = theatre.getEventCoordinates(e);
 
@@ -54,14 +71,16 @@ function pointerMove(e) {
 }
 
 function getTileCoordinate(x, y, cellSize) {
+
     return {
-        x: Math.floor(x / cellSize),
-        y: Math.floor(y / cellSize)
+        x: Math.floor(x / cellSize) + view.x,
+        y: Math.floor(y / cellSize) + view.y
     }
 }
 
 // Interaction
 theatre.addEventListener("pointerdown", (e) => pointerDown(e) );
 theatre.addEventListener("pointerup",   (e) => pointerUp(e));
+theatre.addEventListener("dblclick",    (e) => pointerUp(e));
 theatre.addEventListener("pointermove", (e) => pointerMove(e));
 theatre.addEventListener("contextmenu", (e) => e.preventDefault());

@@ -12,6 +12,8 @@ const bush = new TileType('bush.png');
 const truck = new MobileType('truck.png');
 
 world.floorTypes.push(grass, darkGrass);
+world.floorTypes[-1] = new FloorType('truck.png');
+
 world.tileTypes.push(null, bush);
 world.mobileTypes.push(truck);
 
