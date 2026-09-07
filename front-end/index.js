@@ -18,7 +18,7 @@ theatre.redraw = render;
 window.onload = () => { theatre.redraw(); }
 
 theatre.canvas.style.width = "100vw"
-theatre.canvas.style.height = "100vw"
+// theatre.canvas.style.height = "100vw"
 
 
 // Interaction
