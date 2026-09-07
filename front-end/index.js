@@ -17,14 +17,22 @@ canvasElement.style.imageRendering = 'pixelated'; //prevent image blurring;
 theatre.redraw = render;
 window.onload = () => { theatre.redraw(); }
 
+// Interaction
+theatre.addEventListener("pointerdown", (e) => pointerDown(e) );
+theatre.addEventListener("pointerup",   (e) => pointerUp(e));
+theatre.addEventListener("dblclick",    (e) => pointerUp(e));
+theatre.addEventListener("pointermove", (e) => pointerMove(e));
+theatre.addEventListener("contextmenu", (e) => e.preventDefault());
 
-
-// ---
-
+// State
 const { world, view } = getState();
 let mouseButton = -1;
 
+// Render
 function render() {
+
+    ctx.fillRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
+    // ctx.clearRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
 
     for (let i = 0; i < GRID_SIZE; i++) {
         for (let j = 0; j < GRID_SIZE; j++) {
@@ -35,23 +43,41 @@ function render() {
             const floorType = world.floorTypes[floor];
             const tileType = world.tileTypes[tile];
 
-            floorType && floorType.texture.draw(i * TILE_SIZE, j * TILE_SIZE, 0, ctx);
-            tileType && tileType.texture.draw(i * TILE_SIZE, j * TILE_SIZE, 0, ctx);
+            floorType && floorType.texture.draw((i + view.x) * TILE_SIZE, (j + view.y) * TILE_SIZE, 0, ctx);
+            tileType && tileType.texture.draw((i + view.x) * TILE_SIZE, (j + view.y) * TILE_SIZE, 0, ctx);
 
 
         }
     }
 }
 
+// Pointer Event Handling
+
+function getTileCoordinate(x, y, cellSize) {
+
+    return {
+        x: Math.floor(x / cellSize),
+        y: Math.floor(y / cellSize)
+    }
+}
+
 function pointerDown(e) { mouseButton = e.button; }
+
 function pointerUp(e) {
 
     if (mouseButton == 2 || event.type == 'dblclick') {
         let {x, y} = theatre.getEventCoordinates(e);
         let tile = getTileCoordinate(x, y, TILE_SIZE);
 
+
+
         tile.x -= 4;
         tile.y -= 4;
+
+        startScroll((tile.x - view.x) * TILE_SIZE, (tile.y - view.y) * TILE_SIZE);
+
+        // console.log((tile.x - view.x) * TILE_SIZE, (tile.y - view.y) * TILE_SIZE);
+
 
         view.setView(tile.x, tile.y);
         view.updateView(world);
@@ -60,6 +86,7 @@ function pointerUp(e) {
 
     mouseButton = -1;
 }
+
 function pointerMove(e) {
     let {x, y} = theatre.getEventCoordinates(e);
 
@@ -70,17 +97,27 @@ function pointerMove(e) {
     render();
 }
 
-function getTileCoordinate(x, y, cellSize) {
+// Animation
 
-    return {
-        x: Math.floor(x / cellSize) + view.x,
-        y: Math.floor(y / cellSize) + view.y
-    }
+let xPerStep = 0;
+let yPerStep = 0;
+let stepsRemaining = 0;
+
+function startScroll(x, y) {
+
+    stepsRemaining = 10;
+    xPerStep = -x / stepsRemaining;
+    yPerStep = -y / stepsRemaining;
+    scrollScreen();
 }
 
-// Interaction
-theatre.addEventListener("pointerdown", (e) => pointerDown(e) );
-theatre.addEventListener("pointerup",   (e) => pointerUp(e));
-theatre.addEventListener("dblclick",    (e) => pointerUp(e));
-theatre.addEventListener("pointermove", (e) => pointerMove(e));
-theatre.addEventListener("contextmenu", (e) => e.preventDefault());
+function scrollScreen() {
+
+    if (stepsRemaining == 0) { return; }
+
+    ctx.translate(xPerStep, yPerStep);
+    stepsRemaining--;
+
+    theatre.redraw();
+    requestAnimationFrame(scrollScreen);
+}
