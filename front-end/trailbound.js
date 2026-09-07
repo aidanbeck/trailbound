@@ -6,16 +6,26 @@ import Mobile from './Mobile.js';
 const world = new World();
 const view = new View();
 
-const grass = new FloorType('grass.bmp');
-const darkGrass = new FloorType('darkGrass.bmp');
-const bush = new TileType('bush.png');
-const truck = new MobileType('truck.png');
+world.floorTypes.push(
+    new FloorType('grass.bmp'),
+    new FloorType('darkGrass.bmp')
+);
+world.floorTypes[-1] = new FloorType('bush.png');
 
-world.floorTypes.push(grass, darkGrass);
-world.floorTypes[-1] = new FloorType('truck.png');
+world.tileTypes.push(
+    null,
+    new TileType('bush.png'),
+    new TileType('rose.png'),
+    new TileType('plant.png'),
+    new TileType('rock.png'),
+    new TileType('stump.png'),
+    new TileType('chest.png')
+);
 
-world.tileTypes.push(null, bush);
-world.mobileTypes.push(truck);
+world.mobileTypes.push(
+    new MobileType('truck.png')
+);
+
 
 world.setFloor(0, 0, 1);
 world.setFloor(1, 1, 1);

@@ -23,8 +23,16 @@ export default class World {
                 this.floors[i][j] = defaultFloor;
 
                 // temporary world gen
-                if (Math.random() > 0.4) { this.floors[i][j] = 1; }
-                if (Math.random() > 0.5) { this.tiles[i][j] = 1; }
+                if (Math.random() > 0.4) { this.floors[i][j] = 1; } // dark grass
+
+                if (Math.random() > 0.5) { this.tiles[i][j] = 1; } // bush
+                else if (Math.random() > 0.95) { this.tiles[i][j] = 3; } // plant
+                else if (Math.random() > 0.95) { this.tiles[i][j] = 4; } // rock
+                else if (Math.random() > 0.992) { this.tiles[i][j] = 5; } // stump
+                else if (Math.random() > 0.999) { this.tiles[i][j] = 6; } // chest
+
+
+                
 
             }
         }
