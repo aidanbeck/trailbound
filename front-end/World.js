@@ -21,6 +21,11 @@ export default class World {
             for (let j = 0; j < width; j++) {
                 this.tiles[i][j] = defaultTile;
                 this.floors[i][j] = defaultFloor;
+
+                // temporary world gen
+                if (Math.random() > 0.4) { this.floors[i][j] = 1; }
+                if (Math.random() > 0.5) { this.tiles[i][j] = 1; }
+
             }
         }
     }

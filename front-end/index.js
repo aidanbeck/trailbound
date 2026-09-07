@@ -69,15 +69,10 @@ function pointerUp(e) {
         let {x, y} = theatre.getEventCoordinates(e);
         let tile = getTileCoordinate(x, y, TILE_SIZE);
 
-
-
         tile.x -= 4;
         tile.y -= 4;
 
         startScroll((tile.x - view.x) * TILE_SIZE, (tile.y - view.y) * TILE_SIZE);
-
-        // console.log((tile.x - view.x) * TILE_SIZE, (tile.y - view.y) * TILE_SIZE);
-
 
         view.setView(tile.x, tile.y);
         view.updateView(world);
@@ -91,7 +86,10 @@ function pointerMove(e) {
     let {x, y} = theatre.getEventCoordinates(e);
 
     const tile = getTileCoordinate(x, y, TILE_SIZE);
-    mouseButton == 0 && world.setFloor(tile.x, tile.y, 1);
+    if (mouseButton == 0) {
+        // world.setFloor(tile.x, tile.y, 0);
+        world.setTile(tile.x, tile.y, 0);
+    }
 
     view.updateView(world);
     render();
@@ -105,7 +103,7 @@ let stepsRemaining = 0;
 
 function startScroll(x, y) {
 
-    stepsRemaining = 10;
+    stepsRemaining = 16;
     xPerStep = -x / stepsRemaining;
     yPerStep = -y / stepsRemaining;
     scrollScreen();
