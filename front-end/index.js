@@ -17,14 +17,12 @@ canvasElement.style.imageRendering = 'pixelated'; //prevent image blurring;
 theatre.redraw = render;
 window.onload = () => { theatre.redraw(); }
 
-// Interaction
-// theatre.addEventListener("pointerdown", () => {mouseDown = true});
-// theatre.addEventListener("pointerup", () => {mouseDown = false});
-// theatre.addEventListener("pointermove", pointerMove);
+
 
 // ---
 
 const { world, view } = getState();
+let mouseButton = -1;
 
 function render() {
 
@@ -37,10 +35,33 @@ function render() {
             const floorType = world.floorTypes[floor];
             const tileType = world.tileTypes[tile];
 
-            floorType.texture.draw(j * TILE_SIZE, i * TILE_SIZE, 0, ctx);
-            tileType && tileType.texture.draw(j * TILE_SIZE, i * TILE_SIZE, 0, ctx);
-
+            floorType.texture.draw(i * TILE_SIZE, j * TILE_SIZE, 0, ctx);
+            tileType && tileType.texture.draw(i * TILE_SIZE, j * TILE_SIZE, 0, ctx);
         }
     }
-
 }
+
+function pointerDown(e) { mouseButton = e.button; }
+function pointerUp(e) { mouseButton = -1; }
+function pointerMove(e) {
+    let {x, y} = theatre.getEventCoordinates(e);
+
+    const tile = getTileCoordinate(x, y, TILE_SIZE);
+    mouseButton == 0 && world.setFloor(tile.x, tile.y, 1);
+
+    view.updateView(world);
+    render();
+}
+
+function getTileCoordinate(x, y, cellSize) {
+    return {
+        x: Math.floor(x / cellSize),
+        y: Math.floor(y / cellSize)
+    }
+}
+
+// Interaction
+theatre.addEventListener("pointerdown", (e) => pointerDown(e) );
+theatre.addEventListener("pointerup",   (e) => pointerUp(e));
+theatre.addEventListener("pointermove", (e) => pointerMove(e));
+theatre.addEventListener("contextmenu", (e) => e.preventDefault());
