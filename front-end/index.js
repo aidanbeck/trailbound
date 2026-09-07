@@ -9,13 +9,17 @@ const canvasElement = document.getElementById("theatre");
 const theatre = new Theatre(canvasElement, TILE_SIZE * GRID_SIZE, TILE_SIZE * GRID_SIZE);
 const ctx = theatre.ctx;
 // theatre.origin = "CENTER";
-theatre.makeFullScreen();
+// theatre.makeFullScreen();
 theatre.shorterDimensionConsistent = true;
 theatre.canvas.style.backgroundColor = "#f8f9fa";
 theatre.ctx.imageSmoothingEnabled = false; //prevent image blurring
 canvasElement.style.imageRendering = 'pixelated'; //prevent image blurring;
 theatre.redraw = render;
 window.onload = () => { theatre.redraw(); }
+
+theatre.canvas.style.width = "100vw"
+theatre.canvas.style.height = "100vw"
+
 
 // Interaction
 theatre.addEventListener("pointerdown", (e) => pointerDown(e) );
@@ -31,7 +35,7 @@ let mouseButton = -1;
 // Render
 function render() {
 
-    ctx.fillRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
+    // ctx.fillRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
     // ctx.clearRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
 
     for (let i = 0; i < GRID_SIZE; i++) {
@@ -48,6 +52,13 @@ function render() {
 
 
         }
+    }
+
+    // Mobiles
+    for (let mobile of view.mobiles) {
+        const mobileType = world.mobileTypes[mobile.mobileType];
+
+        mobileType && mobileType.texture.draw(mobile.x * TILE_SIZE, mobile.y * TILE_SIZE, 0, ctx);
     }
 }
 
@@ -68,6 +79,9 @@ function pointerUp(e) {
     if (mouseButton == 2 || event.type == 'dblclick') {
         let {x, y} = theatre.getEventCoordinates(e);
         let tile = getTileCoordinate(x, y, TILE_SIZE);
+
+        world.mobiles[0].x = tile.x;
+        world.mobiles[0].y = tile.y;
 
         tile.x -= 4;
         tile.y -= 4;
@@ -112,10 +126,13 @@ function startScroll(x, y) {
 function scrollScreen() {
 
     if (stepsRemaining == 0) { return; }
+    const imageData = ctx.getImageData(0, 0, 500, 500);
 
     ctx.translate(xPerStep, yPerStep);
     stepsRemaining--;
 
+    
+    ctx.putImageData(imageData, xPerStep, yPerStep);
     theatre.redraw();
     requestAnimationFrame(scrollScreen);
 }

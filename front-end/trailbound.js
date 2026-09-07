@@ -10,7 +10,7 @@ world.floorTypes.push(
     new FloorType('grass.bmp'),
     new FloorType('darkGrass.bmp')
 );
-world.floorTypes[-1] = new FloorType('bush.png');
+world.floorTypes[-1] = new FloorType('darkGrass.bmp');
 
 world.tileTypes.push(
     null,
@@ -34,7 +34,7 @@ world.setFloor(2, 2, 1);
 world.setTile(1, 1, 1);
 
 world.createMobile(new Mobile(
-    2, 2, 0
+    4, 4, 0
 ));
 
 view.updateView(world);
