@@ -39,12 +39,7 @@ world.createMobile(new Mobile(
 
 view.updateView(world);
 
-export default function getState() {
-    return {
-        world: world,
-        view: view
-    }
-}
+export { world, view }
 
 // const buffer = new Uint8Array([1, 2, 3, 4]);
 // socket.send(buffer);

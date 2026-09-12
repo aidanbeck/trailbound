@@ -31,22 +31,6 @@ theatre.addEventListener("contextmenu", (e) => e.preventDefault());
 // State
 let mouseButton = -1;
 
-const serverURL = 'https://durable-object-starter.aidanbeck.workers.dev/';
-async function getView() {
-    try {
-        const response = await fetch(serverURL);
-        const data = await response.json();
-
-        view.tiles = data.tiles;
-        view.floors = data.floors;
-        render();
-
-    } catch(error) {
-        console.error('Fetch failed: ', error);
-    }
-}
-getView();
-
 // Render
 function render() {
 
@@ -104,7 +88,7 @@ function pointerUp(e) {
         startScroll((tile.x - view.x) * TILE_SIZE, (tile.y - view.y) * TILE_SIZE);
 
         view.setView(tile.x, tile.y);
-        // view.updateView(world);
+        view.updateView(world);
         render();
     }
 
@@ -120,7 +104,7 @@ function pointerMove(e) {
         world.setTile(tile.x, tile.y, 0);
     }
 
-    // view.updateView(world);
+    view.updateView(world);
     render();
 }
 

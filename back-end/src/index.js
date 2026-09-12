@@ -1,4 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
+import { world, view } from './front-end/trailbound.js';
 
 /**
  * Welcome to Cloudflare Workers! This is your first Durable Objects application.
@@ -28,6 +29,17 @@ export class MyDurableObject extends DurableObject {
 	 */
 	constructor(ctx, env) {
 		super(ctx, env);
+
+	}
+
+	async saveState() {
+		const saveWorld = (await this.ctx.storage.get("world")) || (await this.ctx.storage.put("world", world));
+		const saveView = (await this.ctx.storage.get("view")) || (await this.ctx.storage.put("view", view));
+		
+		return {
+			world: saveWorld,
+			view: saveView
+		}
 	}
 
 	/**
@@ -63,6 +75,17 @@ export default {
 		// the remote Durable Object instance.
 		const greeting = await stub.sayHello("world");
 
-		return new Response(greeting);
+		const v = await stub.saveState();
+
+		return new Response(
+			JSON.stringify(v.view),
+			{
+				headers: {
+					'Content-Type': 'application/json',
+					'Access-Control-Allow-Origin': '*',
+					'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+				}
+			}
+		);
 	},
 };
