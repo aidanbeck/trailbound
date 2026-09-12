@@ -40,14 +40,18 @@ export class MyDurableObject extends DurableObject {
 	 * @param {Number} y
 	 */
 	async saveState(x, y) {
-		const saveWorld = (await this.ctx.storage.get("world")) || (await this.ctx.storage.put("world", world));
+		const saveWorld = (await this.ctx.storage.get("world")) || world;
 
 		world.tiles = saveWorld.tiles;
 		world.floors = saveWorld.floors;
 		world.mobiles = saveWorld.mobiles;
 
+		world.setTile(x+4, y+4, 0); // destroy walked on tile
+
 		let saveView = new View(x, y);
 		saveView.updateView(world);
+	
+		await this.ctx.storage.put("world", world); // save world
 		
 		return {
 			x: saveView.x,
