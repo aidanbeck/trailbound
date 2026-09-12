@@ -1,5 +1,8 @@
 import { DurableObject } from "cloudflare:workers";
 import { world, view } from './front-end/trailbound.js';
+import View from './front-end/View.js';
+import World from './front-end/World.js';
+
 
 /**
  * Welcome to Cloudflare Workers! This is your first Durable Objects application.
@@ -32,14 +35,27 @@ export class MyDurableObject extends DurableObject {
 
 	}
 
-	async saveState() {
+	/**
+	 * @param {Number} x
+	 * @param {Number} y
+	 */
+	async saveState(x, y) {
 		const saveWorld = (await this.ctx.storage.get("world")) || (await this.ctx.storage.put("world", world));
-		const saveView = (await this.ctx.storage.get("view")) || (await this.ctx.storage.put("view", view));
+
+		world.tiles = saveWorld.tiles;
+		world.floors = saveWorld.floors;
+		world.mobiles = saveWorld.mobiles;
+
+		let saveView = new View(x, y);
+		saveView.updateView(world);
 		
 		return {
-			world: saveWorld,
-			view: saveView
-		}
+			x: saveView.x,
+			y: saveView.y,
+			floors: saveView.floors,
+			tiles: saveView.tiles,
+			mobiles: saveView.mobiles
+		};
 	}
 
 	/**
@@ -64,6 +80,16 @@ export default {
 	 * @returns {Promise<Response>} The response to be sent back to the client
 	 */
 	async fetch(request, env, ctx) {
+
+		const corsHeaders = {
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+			"Access-Control-Allow-Headers": "Content-Type",
+		};
+
+		// Handle CORS preflight request
+		if (request.method === "OPTIONS") { return new Response(null, { status: 204, headers: corsHeaders, }); }
+
 		// Create a stub to open a communication channel with the Durable Object
 		// instance named "foo".
 		//
@@ -75,17 +101,13 @@ export default {
 		// the remote Durable Object instance.
 		const greeting = await stub.sayHello("world");
 
-		const v = await stub.saveState();
+		const body = await request.json();
+
+		const newView = await stub.saveState(body.x, body.y);
 
 		return new Response(
-			JSON.stringify(v.view),
-			{
-				headers: {
-					'Content-Type': 'application/json',
-					'Access-Control-Allow-Origin': '*',
-					'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-				}
-			}
+			JSON.stringify(newView),
+			{ headers: { "Content-Type": "application/json", ...corsHeaders, } }
 		);
 	},
 };

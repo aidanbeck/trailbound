@@ -30,22 +30,36 @@ theatre.addEventListener("contextmenu", (e) => e.preventDefault());
 
 // State
 let mouseButton = -1;
+let waitForNewView = true;
 
 const serverURL = 'https://durable-object-starter.aidanbeck.workers.dev/';
+// const serverURL = 'http://127.0.0.1:8787/';
 async function getView() {
     try {
-        const response = await fetch(serverURL);
+
+        const response = await fetch(serverURL, {
+            method: 'POST',
+            // headers: {
+			// 		'Content-Type': 'application/json',
+			// 		'Access-Control-Allow-Origin': '*',
+			// 		'Access-Control-Allow-Headers': '*',
+			// 		'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
+			// },
+            body: JSON.stringify({ x: view.x, y: view.y })
+        });
+        
         const data = await response.json();
 
         view.tiles = data.tiles;
         view.floors = data.floors;
+        waitForNewView = false;
         render();
+        // console.log(view.x, view.y);
 
     } catch(error) {
         console.error('Fetch failed: ', error);
     }
 }
-getView();
 
 // Render
 function render() {
@@ -64,7 +78,6 @@ function render() {
 
             floorType && floorType.texture.draw((i + view.x) * TILE_SIZE, (j + view.y) * TILE_SIZE, 0, ctx);
             tileType && tileType.texture.draw((i + view.x) * TILE_SIZE, (j + view.y) * TILE_SIZE, 0, ctx);
-
 
         }
     }
@@ -105,7 +118,7 @@ function pointerUp(e) {
 
         view.setView(tile.x, tile.y);
         // view.updateView(world);
-        render();
+        getView();
     }
 
     mouseButton = -1;
@@ -121,7 +134,6 @@ function pointerMove(e) {
     }
 
     // view.updateView(world);
-    render();
 }
 
 // Animation
@@ -140,14 +152,20 @@ function startScroll(x, y) {
 
 function scrollScreen() {
 
-    if (stepsRemaining == 0) { return; }
-    const imageData = ctx.getImageData(0, 0, 500, 500);
+    if (stepsRemaining == 0) { waitForNewView = true; return; }
 
-    ctx.translate(xPerStep, yPerStep);
-    stepsRemaining--;
+    if (!waitForNewView) {
+        const imageData = ctx.getImageData(0, 0, 500, 500);
 
+        ctx.translate(xPerStep, yPerStep);
+        stepsRemaining--;
+
+        ctx.putImageData(imageData, xPerStep, yPerStep);
+        theatre.redraw();
+    }    
     
-    ctx.putImageData(imageData, xPerStep, yPerStep);
-    theatre.redraw();
     requestAnimationFrame(scrollScreen);
 }
+
+getView();
+startScroll(0,0);
