@@ -32,19 +32,22 @@ theatre.addEventListener("contextmenu", (e) => e.preventDefault());
 let mouseButton = -1;
 let waitForNewView = true;
 
-const serverURL = 'https://durable-object-starter.aidanbeck.workers.dev/';
-// const serverURL = 'http://127.0.0.1:8787/';
+// const serverURL = 'https://durable-object-starter.aidanbeck.workers.dev/';
+// const socket = new WebSocket("wss://durable-object-starter.aidanbeck.workers.dev/");
+const serverURL = 'http://127.0.0.1:8787/';
+const socket = new WebSocket('ws://127.0.0.1:8787/websocket');
+
+socket.addEventListener("open", (event) => { console.log("socket opened"); });
+socket.addEventListener("message", (event) => {
+    const data = JSON.parse(event.data); // use to access data
+    console.log(data);    
+});
+
 async function getView() {
     try {
 
         const response = await fetch(serverURL, {
             method: 'POST',
-            // headers: {
-			// 		'Content-Type': 'application/json',
-			// 		'Access-Control-Allow-Origin': '*',
-			// 		'Access-Control-Allow-Headers': '*',
-			// 		'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
-			// },
             body: JSON.stringify({ x: view.x, y: view.y })
         });
         
@@ -54,7 +57,6 @@ async function getView() {
         view.floors = data.floors;
         waitForNewView = false;
         render();
-        // console.log(view.x, view.y);
 
     } catch(error) {
         console.error('Fetch failed: ', error);
@@ -129,11 +131,8 @@ function pointerMove(e) {
 
     const tile = getTileCoordinate(x, y, TILE_SIZE);
     if (mouseButton == 0) {
-        // world.setFloor(tile.x, tile.y, 0);
         world.setTile(tile.x, tile.y, 0);
     }
-
-    // view.updateView(world);
 }
 
 // Animation
@@ -169,3 +168,6 @@ function scrollScreen() {
 
 getView();
 startScroll(0,0);
+
+// const buffer = new Uint8Array([1, 2, 3, 4]);
+// socket.send(buffer);
