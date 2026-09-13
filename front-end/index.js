@@ -1,5 +1,6 @@
 import Theatre from './easel/Theatre.js';
-import { world, view } from './trailbound.js';
+import { tileTypes, floorTypes, mobileTypes } from './trailboundTypes.js';
+import Client from './trailbound/Client.js';
 
 const TILE_SIZE = 16;
 const GRID_SIZE = 9;
@@ -30,41 +31,18 @@ theatre.addEventListener("contextmenu", (e) => e.preventDefault());
 
 // State
 let mouseButton = -1;
-let waitForNewView = true;
 
 // const serverURL = 'https://durable-object-starter.aidanbeck.workers.dev/';
 // const socket = new WebSocket("wss://durable-object-starter.aidanbeck.workers.dev/");
 const serverURL = 'http://127.0.0.1:8787/';
 const socket = new WebSocket('ws://127.0.0.1:8787/websocket');
 
-socket.addEventListener("open", (event) => { console.log("socket opened"); });
-socket.addEventListener("message", (event) => {
-    const data = JSON.parse(event.data); // use to access data
-    console.log(data);    
-});
-
-async function getView() {
-    try {
-
-        const response = await fetch(serverURL, {
-            method: 'POST',
-            body: JSON.stringify({ x: view.x, y: view.y })
-        });
-        
-        const data = await response.json();
-
-        view.tiles = data.tiles;
-        view.floors = data.floors;
-        waitForNewView = false;
-        render();
-
-    } catch(error) {
-        console.error('Fetch failed: ', error);
-    }
-}
+const client = new Client(serverURL, socket);
 
 // Render
 function render() {
+
+    const view = client.view;
 
     // ctx.fillRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
     // ctx.clearRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
@@ -75,18 +53,18 @@ function render() {
             const floor = view.floors[j * GRID_SIZE + i];
             const tile = view.tiles[j * GRID_SIZE + i];
 
-            const floorType = world.floorTypes[floor];
-            const tileType = world.tileTypes[tile];
+            const floorType = floorTypes[floor];
+            const tileType = tileTypes[tile];
 
-            floorType && floorType.texture.draw((i + view.x) * TILE_SIZE, (j + view.y) * TILE_SIZE, 0, ctx);
-            tileType && tileType.texture.draw((i + view.x) * TILE_SIZE, (j + view.y) * TILE_SIZE, 0, ctx);
+            floorType && floorType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
+            tileType && tileType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
 
         }
     }
 
     // Mobiles
     for (let mobile of view.mobiles) {
-        const mobileType = world.mobileTypes[mobile.mobileType];
+        const mobileType = mobileTypes[mobile.mobileType];
 
         mobileType && mobileType.texture.draw(mobile.x * TILE_SIZE, mobile.y * TILE_SIZE, 0, ctx);
     }
@@ -110,17 +88,11 @@ function pointerUp(e) {
         let {x, y} = theatre.getEventCoordinates(e);
         let tile = getTileCoordinate(x, y, TILE_SIZE);
 
-        world.mobiles[0].x = tile.x;
-        world.mobiles[0].y = tile.y;
+        let viewX = client.view.x + tile.x - 4;
+        let viewY = client.view.y + tile.y - 4;
 
-        tile.x -= 4;
-        tile.y -= 4;
-
-        startScroll((tile.x - view.x) * TILE_SIZE, (tile.y - view.y) * TILE_SIZE);
-
-        view.setView(tile.x, tile.y);
-        // view.updateView(world);
-        getView();
+        client.view.setView(viewX, viewY);
+        client.fetchView(render); // pass in render function for when view is ready
     }
 
     mouseButton = -1;
@@ -131,43 +103,8 @@ function pointerMove(e) {
 
     const tile = getTileCoordinate(x, y, TILE_SIZE);
     if (mouseButton == 0) {
-        world.setTile(tile.x, tile.y, 0);
+        client.world.setTile(tile.x, tile.y, 0);
     }
 }
 
-// Animation
-
-let xPerStep = 0;
-let yPerStep = 0;
-let stepsRemaining = 0;
-
-function startScroll(x, y) {
-
-    stepsRemaining = 16;
-    xPerStep = -x / stepsRemaining;
-    yPerStep = -y / stepsRemaining;
-    scrollScreen();
-}
-
-function scrollScreen() {
-
-    if (stepsRemaining == 0) { waitForNewView = true; return; }
-
-    if (!waitForNewView) {
-        const imageData = ctx.getImageData(0, 0, 500, 500);
-
-        ctx.translate(xPerStep, yPerStep);
-        stepsRemaining--;
-
-        ctx.putImageData(imageData, xPerStep, yPerStep);
-        theatre.redraw();
-    }    
-    
-    requestAnimationFrame(scrollScreen);
-}
-
-getView();
-startScroll(0,0);
-
-// const buffer = new Uint8Array([1, 2, 3, 4]);
-// socket.send(buffer);
+globalThis.CLIENT = client;

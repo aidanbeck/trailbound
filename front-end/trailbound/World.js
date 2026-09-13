@@ -4,6 +4,7 @@ export default class World {
         this.tileTypes = [];
         this.floorTypes = [];
         this.mobileTypes = [];
+        // const buffer = new Uint8Array([1, 2, 3, 4]);
         
         this.tiles = []; // 256x256 array: tree, boulder, bush, tall grass, wall
         this.floors = []; // 256x256 array: grass, dirt, water, stone, wood floor
@@ -67,7 +68,7 @@ export default class World {
     getMobile(index) {
         return this.mobiles[index];
     }
-    createMobile(mobile) {
+    addMobile(mobile) {
         this.mobiles.push(mobile);
         // todo use free mobile indexes
     }

@@ -1,5 +1,6 @@
 export default class Mobile {
-    constructor(x, y, mobileType) {
+    constructor(id, x, y, mobileType) {
+        this.id = id;
         this.x = x;
         this.y = y;
         this.mobileType = mobileType; // references index in MobileTypes array in world?
