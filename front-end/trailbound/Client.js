@@ -12,7 +12,6 @@ export default class Client {
         this.view.update(this.world);
         this.fetchView();
         
-
         socket.addEventListener("message", this.recieveMessage);
     }
 

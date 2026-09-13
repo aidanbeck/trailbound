@@ -28,47 +28,14 @@ theatre.addEventListener("pointerup",   (e) => pointerUp(e));
 theatre.addEventListener("dblclick",    (e) => pointerUp(e));
 theatre.addEventListener("pointermove", (e) => pointerMove(e));
 theatre.addEventListener("contextmenu", (e) => e.preventDefault());
-
-// State
 let mouseButton = -1;
 
-// const serverURL = 'https://durable-object-starter.aidanbeck.workers.dev/';
-// const socket = new WebSocket("wss://durable-object-starter.aidanbeck.workers.dev/");
-const serverURL = 'http://127.0.0.1:8787/';
-const socket = new WebSocket('ws://127.0.0.1:8787/websocket');
-
+// Networking
+const serverURL = 'https://durable-object-starter.aidanbeck.workers.dev/';
+const socket = new WebSocket("wss://durable-object-starter.aidanbeck.workers.dev/");
+// const serverURL = 'http://127.0.0.1:8787/';
+// const socket = new WebSocket('ws://127.0.0.1:8787/websocket');
 const client = new Client(serverURL, socket);
-
-// Render
-function render() {
-
-    const view = client.view;
-
-    // ctx.fillRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
-    // ctx.clearRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
-
-    for (let i = 0; i < GRID_SIZE; i++) {
-        for (let j = 0; j < GRID_SIZE; j++) {
-
-            const floor = view.floors[j * GRID_SIZE + i];
-            const tile = view.tiles[j * GRID_SIZE + i];
-
-            const floorType = floorTypes[floor];
-            const tileType = tileTypes[tile];
-
-            floorType && floorType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
-            tileType && tileType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
-
-        }
-    }
-
-    // Mobiles
-    for (let mobile of view.mobiles) {
-        const mobileType = mobileTypes[mobile.mobileType];
-
-        mobileType && mobileType.texture.draw(mobile.x * TILE_SIZE, mobile.y * TILE_SIZE, 0, ctx);
-    }
-}
 
 // Pointer Event Handling
 
@@ -104,6 +71,38 @@ function pointerMove(e) {
     const tile = getTileCoordinate(x, y, TILE_SIZE);
     if (mouseButton == 0) {
         client.world.setTile(tile.x, tile.y, 0);
+    }
+}
+
+// Rendering
+
+function render() {
+
+    const view = client.view;
+
+    // ctx.fillRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
+    // ctx.clearRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
+
+    for (let i = 0; i < GRID_SIZE; i++) {
+        for (let j = 0; j < GRID_SIZE; j++) {
+
+            const floor = view.floors[j * GRID_SIZE + i];
+            const tile = view.tiles[j * GRID_SIZE + i];
+
+            const floorType = floorTypes[floor];
+            const tileType = tileTypes[tile];
+
+            floorType && floorType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
+            tileType && tileType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
+
+        }
+    }
+
+    // Mobiles
+    for (let mobile of view.mobiles) {
+        const mobileType = mobileTypes[mobile.mobileType];
+
+        mobileType && mobileType.texture.draw(mobile.x * TILE_SIZE, mobile.y * TILE_SIZE, 0, ctx);
     }
 }
 
