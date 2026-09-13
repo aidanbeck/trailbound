@@ -1,18 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
-import { world, view } from './front-end/trailbound.js';
+
+import { world } from './front-end/trailbound.js';
 import View from './front-end/View.js';
-import World from './front-end/World.js';
-
-
-/**
- * Welcome to Cloudflare Workers! This is your first Durable Objects application.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your Durable Object in action
- * - Run `npm run deploy` to publish your application
- *
- * Learn more at https://developers.cloudflare.com/durable-objects
- */
 
 /**
  * Env provides a mechanism to reference bindings declared in wrangler.jsonc within JavaScript
@@ -21,7 +10,6 @@ import World from './front-end/World.js';
  * @property {DurableObjectNamespace} MY_DURABLE_OBJECT - The Durable Object namespace binding
  */
 
-/** A Durable Object's behavior is defined in an exported Javascript class */
 export class MyDurableObject extends DurableObject {
 	/**
 	 * The constructor is invoked once upon creation of the Durable Object, i.e. the first call to
@@ -32,14 +20,13 @@ export class MyDurableObject extends DurableObject {
 	 */
 	constructor(ctx, env) {
 		super(ctx, env);
-
 	}
 
 	/**
 	 * @param {Number} x
 	 * @param {Number} y
 	 */
-	async saveState(x, y) {
+	async moveView(x, y) {
 		const saveWorld = (await this.ctx.storage.get("world")) || world;
 
 		world.tiles = saveWorld.tiles;
@@ -85,33 +72,25 @@ export default {
 	 */
 	async fetch(request, env, ctx) {
 
+		// Handle Cors
 		const corsHeaders = {
-			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Origin": "*", // before shipping, change to https://trailbound.us/
 			"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 			"Access-Control-Allow-Headers": "Content-Type",
 		};
-
-		// Handle CORS preflight request
 		if (request.method === "OPTIONS") { return new Response(null, { status: 204, headers: corsHeaders, }); }
 
-		// Create a stub to open a communication channel with the Durable Object
-		// instance named "foo".
-		//
-		// Requests from all Workers to the Durable Object instance named "foo"
-		// will go to a single remote Durable Object instance.
-		const stub = env.MY_DURABLE_OBJECT.getByName("foo");
 
-		// Call the `sayHello()` RPC method on the stub to invoke the method on
-		// the remote Durable Object instance.
-		const greeting = await stub.sayHello("world");
-
+		const instanceName = "foo";
+		const stub = env.MY_DURABLE_OBJECT.getByName(instanceName);
 		const body = await request.json();
 
-		const newView = await stub.saveState(body.x, body.y);
+		const movedView = await stub.moveView(body.x, body.y);
 
 		return new Response(
-			JSON.stringify(newView),
+			JSON.stringify(movedView),
 			{ headers: { "Content-Type": "application/json", ...corsHeaders, } }
 		);
-	},
+		
+	}
 };
