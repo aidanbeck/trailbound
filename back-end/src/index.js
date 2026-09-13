@@ -16,25 +16,19 @@ export default {
 		const instanceName = "myServerSlug"; //url.pathname.split("/");
 		const stub = env.DURABLE_WORLD.getByName(instanceName);
 
-		if (request.headers.get("Upgrade") === "websocket") {
-			return stub.fetch(request);
-		}
-		
-		// Handle Cors
 		const corsHeaders = {
-			"Access-Control-Allow-Origin": "*", // before shipping, change to https://trailbound.us/
+			"Access-Control-Allow-Origin": "*",
 			"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 			"Access-Control-Allow-Headers": "Content-Type",
 		};
+
 		if (request.method === "OPTIONS") { return new Response(null, { status: 204, headers: corsHeaders, }); }
-		
+
+		if (request.headers.get("Upgrade") === "websocket") { return stub.fetch(request); }
+
 		const body = await request.json();
 		const movedView = await stub.moveView(body.x, body.y);
-
-		return new Response(
-			JSON.stringify(movedView),
-			{ headers: { "Content-Type": "application/json", ...corsHeaders, } }
-		);
+		return new Response( JSON.stringify(movedView), { headers: { "Content-Type": "application/json", ...corsHeaders, }} );
 		
 	}
 };
