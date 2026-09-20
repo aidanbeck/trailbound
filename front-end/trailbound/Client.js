@@ -66,7 +66,7 @@ export default class Client {
         });
     }
 
-    receiveTile(x, y, tile) {
+    receiveTile(x, y, tile) { // also do recieveFloor, add/update/remove mobile
         this.world.setTile(x, y, tile);
         this.view.setTile(x, y, tile);
         this.renderFunction(this.view);

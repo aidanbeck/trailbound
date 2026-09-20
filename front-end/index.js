@@ -28,7 +28,7 @@ if (LAN) {
     serverURL = 'http://127.0.0.1:8787/';
     socket = new WebSocket('ws://127.0.0.1:8787/websocket');
 } else {
-    serverURL = 'http://durable-world.aidanbeck.workers.dev/';
+    serverURL = 'https://durable-world.aidanbeck.workers.dev/';
     socket = new WebSocket("wss://durable-world.aidanbeck.workers.dev/websocket");
 }
 
