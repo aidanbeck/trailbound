@@ -15,7 +15,7 @@ export default class View {
         this.y = y;
     }
 
-    updateView(world) {
+    update(world) {
 
         // clear arrays
         this.tiles.length = 0;

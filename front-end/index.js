@@ -13,8 +13,8 @@ const ctx = theatre.ctx;
 // theatre.makeFullScreen();
 theatre.shorterDimensionConsistent = true;
 theatre.canvas.style.backgroundColor = "#f8f9fa";
-theatre.ctx.imageSmoothingEnabled = false; //prevent image blurring
-canvasElement.style.imageRendering = 'pixelated'; //prevent image blurring;
+theatre.ctx.imageSmoothingEnabled = false; // prevent image blurring
+canvasElement.style.imageRendering = 'pixelated'; // prevent image blurring;
 theatre.canvas.style.width = "100vw"
 theatre.canvas.style.maxHeight = '100vh';
 theatre.redraw = render;
@@ -28,8 +28,8 @@ if (LAN) {
     serverURL = 'http://127.0.0.1:8787/';
     socket = new WebSocket('ws://127.0.0.1:8787/websocket');
 } else {
-    serverURL = 'https://durable-object-starter.aidanbeck.workers.dev/';
-    socket = new WebSocket("wss://durable-object-starter.aidanbeck.workers.dev/");
+    serverURL = 'http://durable-world.aidanbeck.workers.dev/';
+    socket = new WebSocket("wss://durable-world.aidanbeck.workers.dev/websocket");
 }
 
 const client = new Client(serverURL, socket, render);
@@ -65,7 +65,7 @@ function pointerUp(e) {
         let viewY = client.view.y + tile.y - 4;
 
         client.view.setView(viewX, viewY);
-        client.fetchView(render); // pass in render function for when view is ready
+        client.fetchView(render);
     }
 
     mouseButton = -1;
@@ -84,9 +84,6 @@ function pointerMove(e) {
 // Rendering
 
 function render(view = client.view) {
-
-    // ctx.fillRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
-    // ctx.clearRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
 
     for (let i = 0; i < GRID_SIZE; i++) {
         for (let j = 0; j < GRID_SIZE; j++) {

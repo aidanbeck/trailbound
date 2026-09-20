@@ -1,5 +1,5 @@
 {
-  "name": "durable-object-starter",
+  "name": "durable-world",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -8,6 +8,6 @@
     "start": "wrangler dev"
   },
   "devDependencies": {
-    "wrangler": "^4.131.1"
+    "wrangler": "^4.135.0"
   }
 }

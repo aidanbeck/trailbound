@@ -1,13 +1,15 @@
 import { DurableObject } from "cloudflare:workers";
 
-import { world } from './front-end/trailbound.js';
-import View from './front-end/View.js';
+import World from './trailbound/World.js';
+import View from './trailbound/View.js';
+
+const world = new World();
 
 /**
  * Env provides a mechanism to reference bindings declared in wrangler.jsonc within JavaScript
  *
  * @typedef {Object} Env
- * @property {DurableObjectNamespace} MY_DURABLE_OBJECT - The Durable Object namespace binding
+ * @property {DurableObjectNamespace} DURABLE_WORLD - The Durable Object namespace binding
  */
 
 export class DurableWorld extends DurableObject {
@@ -76,7 +78,7 @@ export class DurableWorld extends DurableObject {
         }); // broadcast change
 
 		let saveView = new View(x, y);
-		saveView.updateView(world);
+		saveView.update(world);
 	
 		
 		return {

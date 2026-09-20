@@ -1,4 +1,4 @@
-import Texture from './easel/Texture.js';
+import Texture from '../easel/Texture.js';
 
 const TILE_SIZE = 16; // magic number!
 
