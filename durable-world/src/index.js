@@ -27,8 +27,9 @@ export default {
 		if (request.headers.get("Upgrade") === "websocket") { return stub.fetch(request); }
 
 		const body = await request.json();
-		const movedView = await stub.moveView(body.x, body.y);
-		return new Response( JSON.stringify(movedView), { headers: { "Content-Type": "application/json", ...corsHeaders, }} );
+		let response = await stub.setView(body.x, body.y);
+		
+		return new Response( JSON.stringify(response), { headers: { "Content-Type": "application/json", ...corsHeaders, }} );
 		
 	}
 };

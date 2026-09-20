@@ -48,8 +48,8 @@ theatre.addEventListener("contextmenu", (e) => e.preventDefault());
 function getTileCoordinate(x, y, cellSize) {
 
     return {
-        x: Math.floor(x / cellSize),
-        y: Math.floor(y / cellSize)
+        x: client.view.x + Math.floor(x / cellSize),
+        y: client.view.y + Math.floor(y / cellSize)
     }
 }
 
@@ -61,8 +61,8 @@ function pointerUp(e) {
         let {x, y} = theatre.getEventCoordinates(e);
         let tile = getTileCoordinate(x, y, TILE_SIZE);
 
-        let viewX = client.view.x + tile.x - 4;
-        let viewY = client.view.y + tile.y - 4;
+        let viewX = tile.x - 4;
+        let viewY = tile.y - 4;
 
         client.view.setView(viewX, viewY);
         client.fetchView(render);
@@ -73,10 +73,13 @@ function pointerUp(e) {
 
 function pointerMove(e) {
     let {x, y} = theatre.getEventCoordinates(e);
-
     const tile = getTileCoordinate(x, y, TILE_SIZE);
+
     if (mouseButton == 0) {
-        client.world.setTile(tile.x, tile.y, 0);
+        // let worldTile = client.world.getTile(tile.x, tile.y);
+        // let src = tileTypes[worldTile].texture.image.src;
+        // console.log(src);
+        client.sendTile(tile.x, tile.y, 0);
     }
 }
 

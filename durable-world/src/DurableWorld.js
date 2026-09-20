@@ -50,17 +50,31 @@ export class DurableWorld extends DurableObject {
             this.sockets.delete(server);
         });
 
+        server.addEventListener("message", (event) => {
+            this.receiveMessage(event);
+        });
+
         return new Response(null, {
             status: 101,
             webSocket: client
         });
     }
 
+    receiveMessage(event) {
+        const data = JSON.parse(event.data);
+
+        if (data.type == 'setTile') {
+            this.setTile(data.x, data.y, data.tile);
+        } else if (data.type == 'setFloor') {
+            this.setFloor(data.x, data.y, data.floor);
+        }
+    }
+
 	/**
 	 * @param {Number} x
 	 * @param {Number} y
 	 */
-	async moveView(x, y) {
+	async setView(x, y) {
 		const saveWorld = (await this.ctx.storage.get("world")) || world;
 
 		world.tiles = saveWorld.tiles;
@@ -88,7 +102,6 @@ export class DurableWorld extends DurableObject {
 		let saveView = new View(x, y);
 		saveView.update(world);
 	
-		
 		return {
 			x: saveView.x,
 			y: saveView.y,
@@ -96,6 +109,42 @@ export class DurableWorld extends DurableObject {
 			tiles: saveView.tiles,
 			mobiles: saveView.mobiles
 		};
+	}
+
+    async setTile(x, y, tile) {
+		const saveWorld = (await this.ctx.storage.get("world")) || world;
+		world.tiles = saveWorld.tiles;
+
+        const currentTile = world.getTile(x, y);
+
+        if (tile == currentTile) {
+            return;
+        }
+
+		world.setTile(x, y, tile);
+        await this.ctx.storage.put("world", world); // save world
+
+        this.broadcast({
+            type: "setTile",
+            x: x,
+            y: y,
+            tile: tile
+        });
+	}
+
+    async setFloor(x, y, floor) {
+		const saveWorld = (await this.ctx.storage.get("world")) || world;
+		world.floors = saveWorld.floors;
+
+		world.setFloor(x, y, floor);
+        await this.ctx.storage.put("world", world); // save world
+
+        this.broadcast({
+            type: "setFloor",
+            x: x,
+            y: y,
+            tile: tile
+        });
 	}
 
     broadcast(message) {

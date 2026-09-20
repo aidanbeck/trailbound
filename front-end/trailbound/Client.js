@@ -51,25 +51,32 @@ export default class Client {
     }
 
     async fetchView() {
-        const data = await this.fetch('POST', { x: this.view.x, y: this.view.y });
+        const data = await this.fetch('POST', { type: 'setView', x: this.view.x, y: this.view.y });
         this.view.tiles = data.tiles;
         this.view.floors = data.floors;
+
+        // this.world.update(this.view);
 
         this.renderFunction(this.view);
     }
 
     sendTile(x, y, tile) {
+    
         this.world.setTile(x, y, tile);
         this.view.setTile(x, y, tile);
+
         this.broadcast({
             type: "setTile",
             x: x,
             y: y,
             tile: tile
         });
+        this.renderFunction(this.view);
     }
 
-    sendTile(x, y, floor) {
+    sendFloor(x, y, floor) {
+        if (this.world.getFloor(x,y) == floor) { return; }
+
         this.world.setFloor(x, y, floor);
         this.view.setFloor(x, y, floor);
         this.broadcast({
@@ -78,6 +85,7 @@ export default class Client {
             y: y,
             floor: floor
         });
+        this.renderFunction(this.view);
     }
 
     receiveTile(x, y, tile) {
@@ -97,5 +105,6 @@ export default class Client {
     receiveView(data) {
         this.view.tiles = data.tiles;
         this.view.floors = data.floors;
+        this.world.update(this.view);
     }
 }
