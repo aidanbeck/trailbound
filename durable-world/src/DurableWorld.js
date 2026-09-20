@@ -68,14 +68,22 @@ export class DurableWorld extends DurableObject {
 		world.mobiles = saveWorld.mobiles;
 
 		world.setTile(x + 4, y + 4, 0); // destroy walked on tile
+        world.setFloor(x + 4, y + 4, 0); 
         await this.ctx.storage.put("world", world); // save world
 
         this.broadcast({
-            type: "world_update",
+            type: "setTile",
             x: x + 4,
             y: y + 4,
             tile: 0
-        }); // broadcast change
+        });
+
+        this.broadcast({
+            type: "setFloor",
+            x: x + 4,
+            y: y + 4,
+            floor: 0
+        });
 
 		let saveView = new View(x, y);
 		saveView.update(world);

@@ -21,9 +21,9 @@ export default class Client {
     receiveMessage(event) {
         const data = JSON.parse(event.data);
 
-        if (data.type == 'world_update') { // !!! should be 'tileUpdate'
+        if (data.type == 'setTile') {
             this.receiveTile(data.x, data.y, data.tile);
-        } else if (data.type == 'floorUpdate') {
+        } else if (data.type == 'setFloor') {
             this.receiveFloor(data.x, data.y, data.floor);
         } else {
             console.log("Message from Server: ", data);
