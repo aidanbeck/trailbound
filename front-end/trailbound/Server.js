@@ -17,3 +17,5 @@ export default class Server {
     }
     
 }
+
+// This will eventually replace or be used by a lot of the DurableWorld class, most of that is placeholders for now.

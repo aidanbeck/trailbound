@@ -36,9 +36,3 @@ The primary user story will be spending energy by choosing precise cuts to conne
 An extrinsic objective may be added to motivate this exploration, such as reaching the edge, reaching the center, or collecting a set of artifacts around the world.
 
 **UX Interaction System**
-
-
------
-
-I suspect that when I recieve tiles from a view, those tiles are not updated to the world.
-That must be the reason my type checking via world is not working.

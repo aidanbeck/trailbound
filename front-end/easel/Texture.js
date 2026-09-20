@@ -18,16 +18,22 @@ export default class Texture {
 
     draw(x, y, frame, ctx) {
         
-        ctx.drawImage(
+        // ctx.drawImage(
+        //     this.image,
+        //     this.frameWidth * frame, // sample x
+        //     0, // sample y
+        //     this.frameWidth,
+        //     this.image.height,
+        //     x + this.offsetX,
+        //     y + this.offsetY,
+        //     this.frameWidth,
+        //     this.image.height
+        // )
+
+        ctx.drawImage( // TEMP - Debug Texture.js in Easel
             this.image,
-            this.frameWidth * frame, // sample x
-            0, // sample y
-            this.frameWidth,
-            this.image.height,
             x + this.offsetX,
-            y + this.offsetY,
-            this.frameWidth,
-            this.image.height
+            y + this.offsetY
         )
     }
 

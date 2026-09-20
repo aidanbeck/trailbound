@@ -76,7 +76,7 @@ function pointerMove(e) {
     const tile = getTileCoordinate(x, y, TILE_SIZE);
 
     if (mouseButton == 0) {
-        client.sendTile(tile.x, tile.y, 0);
+        client.sendTile(tile.x, tile.y, 7);
     }
 }
 
@@ -85,17 +85,17 @@ function pointerMove(e) {
 
 function render(view = client.view) {
 
+    // This can be optimized by drawing to a buffer
+
+    // Floors
     for (let i = 0; i < GRID_SIZE; i++) {
         for (let j = 0; j < GRID_SIZE; j++) {
 
             const floor = view.floors[j * GRID_SIZE + i];
-            const tile = view.tiles[j * GRID_SIZE + i];
 
             const floorType = floorTypes[floor];
-            const tileType = tileTypes[tile];
 
             floorType && floorType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
-            tileType && tileType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
 
         }
     }
@@ -105,6 +105,19 @@ function render(view = client.view) {
         const mobileType = mobileTypes[mobile.mobileType];
 
         mobileType && mobileType.texture.draw(mobile.x * TILE_SIZE, mobile.y * TILE_SIZE, 0, ctx);
+    }
+
+    // Tiles
+    for (let i = 0; i < GRID_SIZE; i++) {
+        for (let j = 0; j < GRID_SIZE; j++) {
+
+            const tile = view.tiles[j * GRID_SIZE + i];
+
+            const tileType = tileTypes[tile];
+
+            tileType && tileType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
+
+        }
     }
 }
 
