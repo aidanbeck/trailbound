@@ -27,6 +27,11 @@ export default class View {
         this.tiles[index] = tile;
     } // also do setFloor, add/update/remove mobile
 
+    setFloor(x, y, floor) {
+        const index = this.getCoordinateIndex(x, y);
+        this.floors[index] = floor;
+    }
+
     update(world) {
 
         // clear arrays

@@ -32,9 +32,6 @@ export default class World {
                 else if (Math.random() > 0.992) { this.tiles[i][j] = 5; } // stump
                 else if (Math.random() > 0.999) { this.tiles[i][j] = 6; } // chest
 
-
-                
-
             }
         }
     }

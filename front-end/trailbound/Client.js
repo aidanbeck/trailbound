@@ -21,8 +21,10 @@ export default class Client {
     receiveMessage(event) {
         const data = JSON.parse(event.data);
 
-        if (data.type == 'world_update') {
+        if (data.type == 'world_update') { // !!! should be 'tileUpdate'
             this.receiveTile(data.x, data.y, data.tile);
+        } else if (data.type == 'floorUpdate') {
+            this.receiveFloor(data.x, data.y, data.floor);
         } else {
             console.log("Message from Server: ", data);
         }
@@ -58,23 +60,42 @@ export default class Client {
 
     sendTile(x, y, tile) {
         this.world.setTile(x, y, tile);
-        // this.view.update(this.world);
+        this.view.setTile(x, y, tile);
         this.broadcast({
             type: "setTile",
             x: x,
-            y: y
+            y: y,
+            tile: tile
         });
     }
 
-    receiveTile(x, y, tile) { // also do recieveFloor, add/update/remove mobile
+    sendTile(x, y, floor) {
+        this.world.setFloor(x, y, floor);
+        this.view.setFloor(x, y, floor);
+        this.broadcast({
+            type: "setFloor",
+            x: x,
+            y: y,
+            floor: floor
+        });
+    }
+
+    receiveTile(x, y, tile) {
         this.world.setTile(x, y, tile);
         this.view.setTile(x, y, tile);
         this.renderFunction(this.view);
     }
 
+    receiveFloor(x, y, floor) {
+        this.world.setFloor(x, y, floor);
+        this.view.setFloor(x, y, floor);
+        this.renderFunction(this.view);
+    }
+
+    recieveMobile() {} // How should this work? Should it be updated? created/deleted? Should it update and the client is responsible for creation/deletion?
+
     receiveView(data) {
         this.view.tiles = data.tiles;
         this.view.floors = data.floors;
     }
-    
 }
