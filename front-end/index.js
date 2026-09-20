@@ -1,9 +1,7 @@
 import Theatre from './easel/Theatre.js';
-import { tileTypes, floorTypes, mobileTypes } from './trailboundTypes.js';
 import Client from './trailbound/Client.js';
-
-const TILE_SIZE = 16;
-const GRID_SIZE = 9;
+import { tileTypes, floorTypes, mobileTypes } from './trailboundTypes.js';
+import { LAN, TILE_SIZE, GRID_SIZE } from './config.js';
 
 // Theatre Setup
 const canvasElement = document.getElementById("theatre");
@@ -30,12 +28,17 @@ theatre.addEventListener("pointermove", (e) => pointerMove(e));
 theatre.addEventListener("contextmenu", (e) => e.preventDefault());
 let mouseButton = -1;
 
-// Networking
-const serverURL = 'https://durable-object-starter.aidanbeck.workers.dev/';
-const socket = new WebSocket("wss://durable-object-starter.aidanbeck.workers.dev/");
-// const serverURL = 'http://127.0.0.1:8787/';
-// const socket = new WebSocket('ws://127.0.0.1:8787/websocket');
-const client = new Client(serverURL, socket);
+
+let serverURL, socket;
+if (LAN) {
+    serverURL = 'http://127.0.0.1:8787/';
+    socket = new WebSocket('ws://127.0.0.1:8787/websocket');
+} else {
+    serverURL = 'https://durable-object-starter.aidanbeck.workers.dev/';
+    socket = new WebSocket("wss://durable-object-starter.aidanbeck.workers.dev/");
+}
+
+const client = new Client(serverURL, socket, render);
 
 // Pointer Event Handling
 
@@ -76,9 +79,7 @@ function pointerMove(e) {
 
 // Rendering
 
-function render() {
-
-    const view = client.view;
+function render(view = client.view) {
 
     // ctx.fillRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);
     // ctx.clearRect(view.x * TILE_SIZE - 500, view.y * TILE_SIZE - 500, 2000, 2000);

@@ -3,9 +3,11 @@ import View from './View.js';
 
 export default class Client {
 
-    constructor(serverURL, socket) {
+    constructor(serverURL, socket, renderFunction) {
         this.serverURL = serverURL
         this.socket = socket;
+        this.renderFunction = renderFunction; // external render function
+        
         this.world = new World();
         this.view = new View();
 
@@ -40,12 +42,12 @@ export default class Client {
         this.socket.send(data);
     }
 
-    async fetchView(render) {
+    async fetchView() {
         const data = await this.fetch('POST', { x: this.view.x, y: this.view.y });
         this.view.tiles = data.tiles;
         this.view.floors = data.floors;
 
-        render();
+        this.renderFunction(this.view);
     }
 
     sendTile(x, y, tile) {
