@@ -76,9 +76,6 @@ function pointerMove(e) {
     const tile = getTileCoordinate(x, y, TILE_SIZE);
 
     if (mouseButton == 0) {
-        // let worldTile = client.world.getTile(tile.x, tile.y);
-        // let src = tileTypes[worldTile].texture.image.src;
-        // console.log(src);
         client.sendTile(tile.x, tile.y, 0);
     }
 }

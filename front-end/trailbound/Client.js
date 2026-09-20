@@ -55,12 +55,13 @@ export default class Client {
         this.view.tiles = data.tiles;
         this.view.floors = data.floors;
 
-        // this.world.update(this.view);
+        this.world.update(data.tiles, data.floors, this.view);
 
         this.renderFunction(this.view);
     }
 
     sendTile(x, y, tile) {
+        if (this.world.getTile(x, y) == tile) { return; }
     
         this.world.setTile(x, y, tile);
         this.view.setTile(x, y, tile);
@@ -105,6 +106,6 @@ export default class Client {
     receiveView(data) {
         this.view.tiles = data.tiles;
         this.view.floors = data.floors;
-        this.world.update(this.view);
+        this.world.update(data.tiles, data.floors, this.view);
     }
 }

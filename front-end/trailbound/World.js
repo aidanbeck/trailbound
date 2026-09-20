@@ -74,23 +74,15 @@ export default class World {
         this.freeMobileIndexes.push(index);
     }
 
-    // update(view) {
+    update(tiles, floors, view) {
 
-    //     const startX = view.x;
-    //     const endX = view.x + view.width;
-    //     const startY = view.y;
-    //     const endY = view.y + view.height;
+        for (let i = 0; i < tiles.length; i++) {
+            
+            let x = view.x + (i % view.height);
+            let y = view.y + Math.floor(i / view.width);
 
-    //     for (let i = startY; i < endY; i++) {
-    //         for (let j = startX; j < endX; j++) {
-
-    //             const index = view.getCoordinateIndex(j, i);
-    //             const tile = view.tiles[index];
-    //             const floor = view.floors[index];
-
-    //             this.setTile(tile);
-    //             this.setFloor(floor);
-    //         }
-    //     }
-    // }
+            this.setTile(x, y, tiles[i]);
+            this.setFloor(x, y, floors[i]);
+        }
+    }
 }
