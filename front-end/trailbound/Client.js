@@ -14,12 +14,18 @@ export default class Client {
         this.view.update(this.world);
         this.fetchView();
         
-        socket.addEventListener("message", this.recieveMessage);
+        this.receiveMessage = this.receiveMessage.bind(this); // make 'this' refers to Client, not socket
+        socket.addEventListener("message", this.receiveMessage);
     }
 
-    recieveMessage(event) {
+    receiveMessage(event) {
         const data = JSON.parse(event.data);
-        console.log(data);
+
+        if (data.type == 'world_update') {
+            this.receiveTile(data.x, data.y, data.tile);
+        } else {
+            console.log("Message from Server: ", data);
+        }
     }
 
     async fetch(method, body) {
@@ -60,12 +66,13 @@ export default class Client {
         });
     }
 
-    recieveTile(x, y, tile) {
+    receiveTile(x, y, tile) {
         this.world.setTile(x, y, tile);
-        // this.view.update(this.world);
+        this.view.setTile(x, y, tile);
+        this.renderFunction(this.view);
     }
 
-    recieveView(data) {
+    receiveView(data) {
         this.view.tiles = data.tiles;
         this.view.floors = data.floors;
     }

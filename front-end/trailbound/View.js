@@ -15,6 +15,18 @@ export default class View {
         this.y = y;
     }
 
+    getCoordinateIndex(x, y) {
+        const relativeX = x - this.x;
+        const relativeY = y - this.y;
+
+        return relativeY * this.width + relativeX;
+    }
+
+    setTile(x, y, tile) {
+        const index = this.getCoordinateIndex(x, y);
+        this.tiles[index] = tile;
+    }
+
     update(world) {
 
         // clear arrays
