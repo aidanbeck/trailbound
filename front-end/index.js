@@ -3,7 +3,9 @@ import Client from './trailbound/Client.js';
 import { tileTypes, floorTypes, mobileTypes } from './trailboundTypes.js';
 import { LAN, TILE_SIZE, GRID_SIZE } from './config.js';
 
+
 // Theatre Setup
+
 const canvasElement = document.getElementById("theatre");
 const theatre = new Theatre(canvasElement, TILE_SIZE * GRID_SIZE, TILE_SIZE * GRID_SIZE);
 const ctx = theatre.ctx;
@@ -13,21 +15,13 @@ theatre.shorterDimensionConsistent = true;
 theatre.canvas.style.backgroundColor = "#f8f9fa";
 theatre.ctx.imageSmoothingEnabled = false; //prevent image blurring
 canvasElement.style.imageRendering = 'pixelated'; //prevent image blurring;
+theatre.canvas.style.width = "100vw"
+theatre.canvas.style.maxHeight = '100vh';
 theatre.redraw = render;
 window.onload = () => { theatre.redraw(); }
 
-theatre.canvas.style.width = "100vw"
-theatre.canvas.style.maxHeight = '100vh';
 
-
-// Interaction
-theatre.addEventListener("pointerdown", (e) => pointerDown(e) );
-theatre.addEventListener("pointerup",   (e) => pointerUp(e));
-theatre.addEventListener("dblclick",    (e) => pointerUp(e));
-theatre.addEventListener("pointermove", (e) => pointerMove(e));
-theatre.addEventListener("contextmenu", (e) => e.preventDefault());
-let mouseButton = -1;
-
+// Client Setup
 
 let serverURL, socket;
 if (LAN) {
@@ -40,7 +34,16 @@ if (LAN) {
 
 const client = new Client(serverURL, socket, render);
 
-// Pointer Event Handling
+
+// Interaction
+
+let mouseButton = -1;
+
+theatre.addEventListener("pointerdown", (e) => pointerDown(e) );
+theatre.addEventListener("pointerup",   (e) => pointerUp(e));
+theatre.addEventListener("dblclick",    (e) => pointerUp(e));
+theatre.addEventListener("pointermove", (e) => pointerMove(e));
+theatre.addEventListener("contextmenu", (e) => e.preventDefault());
 
 function getTileCoordinate(x, y, cellSize) {
 
@@ -77,6 +80,7 @@ function pointerMove(e) {
     }
 }
 
+
 // Rendering
 
 function render(view = client.view) {
@@ -106,5 +110,8 @@ function render(view = client.view) {
         mobileType && mobileType.texture.draw(mobile.x * TILE_SIZE, mobile.y * TILE_SIZE, 0, ctx);
     }
 }
+
+
+// Expose Global Variable
 
 globalThis.CLIENT = client;
