@@ -35,6 +35,22 @@ if (LAN) {
 const client = new Client(serverURL, socket, render);
 
 
+// Inventory setup
+let selectedType = 0;
+let typesCount = 7;
+document.addEventListener('keydown', () => {
+    selectedType++;
+    if (selectedType > typesCount) {
+        selectedType = 0;
+        inventory.src = "front-end/images/rachel.png";
+
+    } else {
+        inventory.src = tileTypes[selectedType].texture.image.src;
+    }
+
+});
+
+
 // Interaction
 
 let mouseButton = -1;
@@ -53,7 +69,10 @@ function getTileCoordinate(x, y, cellSize) {
     }
 }
 
-function pointerDown(e) { mouseButton = e.button; }
+function pointerDown(e) { 
+    mouseButton = e.button;
+    pointerMove(e);
+}
 
 function pointerUp(e) {
 
@@ -67,7 +86,6 @@ function pointerUp(e) {
         client.view.setView(viewX, viewY);
         client.fetchView(render);
     }
-
     mouseButton = -1;
 }
 
@@ -76,7 +94,7 @@ function pointerMove(e) {
     const tile = getTileCoordinate(x, y, TILE_SIZE);
 
     if (mouseButton == 0) {
-        client.sendTile(tile.x, tile.y, 7);
+        client.sendTile(tile.x, tile.y, selectedType);
     }
 }
 
