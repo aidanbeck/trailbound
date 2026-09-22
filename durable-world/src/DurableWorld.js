@@ -1,9 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-
-import World from './trailbound/World.js';
-import View from './trailbound/View.js';
-
-const world = new World();
+import Server from './trailbound/Server.js'
 
 /**
  * Env provides a mechanism to reference bindings declared in wrangler.jsonc within JavaScript
@@ -22,129 +18,10 @@ export class DurableWorld extends DurableObject {
 	 */
 	constructor(ctx, env) {
 		super(ctx, env);
-
         this.sockets = new Set();
-	}
+        this.broadcast = this.broadcast.bind(this);
 
-    async fetch(request) {
-        if (request.headers.get("Upgrade") === "websocket") {
-            return this.handleWebSocket(request);
-        }
-
-        return new Response("Not found", { status: 404 });
-    }
-
-    handleWebSocket(request) {
-        const pair = new WebSocketPair();
-        const [client, server] = Object.values(pair);
-
-        server.accept();
-
-        this.sockets.add(server);
-
-        server.addEventListener("close", () => {
-            this.sockets.delete(server);
-        });
-
-        server.addEventListener("error", () => {
-            this.sockets.delete(server);
-        });
-
-        server.addEventListener("message", (event) => {
-            this.receiveMessage(event);
-        });
-
-        return new Response(null, {
-            status: 101,
-            webSocket: client
-        });
-    }
-
-    receiveMessage(event) {
-        const data = JSON.parse(event.data);
-
-        if (data.type == 'setTile') {
-            this.setTile(data.x, data.y, data.tile);
-        } else if (data.type == 'setFloor') {
-            this.setFloor(data.x, data.y, data.floor);
-        }
-    }
-
-	/**
-	 * @param {Number} x
-	 * @param {Number} y
-	 */
-	async setView(x, y) {
-		const saveWorld = (await this.ctx.storage.get("world")) || world;
-
-		world.tiles = saveWorld.tiles;
-		world.floors = saveWorld.floors;
-		world.mobiles = saveWorld.mobiles;
-
-		world.setTile(x + 4, y + 4, 0); // destroy walked on tile
-        world.setFloor(x + 4, y + 4, 0); 
-        await this.ctx.storage.put("world", world); // save world
-
-        this.broadcast({
-            type: "setTile",
-            x: x + 4,
-            y: y + 4,
-            tile: 0
-        });
-
-        this.broadcast({
-            type: "setFloor",
-            x: x + 4,
-            y: y + 4,
-            floor: 0
-        });
-
-		let saveView = new View(x, y);
-		saveView.update(world);
-	
-		return {
-			x: saveView.x,
-			y: saveView.y,
-			floors: saveView.floors,
-			tiles: saveView.tiles,
-			mobiles: saveView.mobiles
-		};
-	}
-
-    async setTile(x, y, tile) {
-		const saveWorld = (await this.ctx.storage.get("world")) || world;
-		world.tiles = saveWorld.tiles;
-
-        const currentTile = world.getTile(x, y);
-
-        if (tile == currentTile) {
-            return;
-        }
-
-		world.setTile(x, y, tile);
-        await this.ctx.storage.put("world", world); // save world
-
-        this.broadcast({
-            type: "setTile",
-            x: x,
-            y: y,
-            tile: tile
-        });
-	}
-
-    async setFloor(x, y, floor) {
-		const saveWorld = (await this.ctx.storage.get("world")) || world;
-		world.floors = saveWorld.floors;
-
-		world.setFloor(x, y, floor);
-        await this.ctx.storage.put("world", world); // save world
-
-        this.broadcast({
-            type: "setFloor",
-            x: x,
-            y: y,
-            tile: tile
-        });
+        this.server = new Server(this.broadcast, ctx);
 	}
 
     broadcast(message) {
@@ -159,14 +36,48 @@ export class DurableWorld extends DurableObject {
         }
     }
 
-	/**
-	 * The Durable Object exposes an RPC method sayHello which will be invoked when a Durable
-	 *  Object instance receives a request from a Worker via the same method invocation on the stub
-	 *
-	 * @param {string} name - The name provided to a Durable Object instance from a Worker
-	 * @returns {Promise<string>} The greeting to be sent back to the Worker
-	 */
-	async sayHello(name) {
-		return `Hello, ${name}!`;
-	}
+    async fetch(request) {
+
+        const corsHeaders = {
+			"Access-Control-Allow-Origin": "*",
+			"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+			"Access-Control-Allow-Headers": "Content-Type",
+		};
+
+        if (request.method === "OPTIONS") { return new Response(null, { status: 204, headers: corsHeaders, }); }
+
+        if (request.headers.get("Upgrade") === "websocket") { return await this.handleWebSocket(request); }
+
+        const body = await request.json();
+        const response = await this.server.setView(body.x, body.y);
+
+        return new Response( JSON.stringify(response), { headers: { "Content-Type": "application/json", ...corsHeaders, }} );
+
+    }
+
+    async handleWebSocket(request) {
+        const pair = new WebSocketPair();
+        const [client, socketServer] = Object.values(pair);
+
+        socketServer.accept();
+
+        this.sockets.add(socketServer);
+
+        socketServer.addEventListener("close", () => {
+            this.sockets.delete(socketServer);
+        });
+
+        socketServer.addEventListener("error", () => {
+            this.sockets.delete(socketServer);
+        });
+
+        socketServer.addEventListener("message", (event) => {
+            this.server.receiveMessage(event); // send to Server class
+        });
+
+        return new Response(null, {
+            status: 101,
+            webSocket: client
+        });
+    }
 }

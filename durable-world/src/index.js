@@ -15,21 +15,6 @@ export default {
 		const url = new URL(request.url);
 		const instanceName = "myServerSlug"; //url.pathname.split("/");
 		const stub = env.DURABLE_WORLD.getByName(instanceName);
-
-		const corsHeaders = {
-			"Access-Control-Allow-Origin": "*",
-			"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-			"Access-Control-Allow-Headers": "Content-Type",
-		};
-
-		if (request.method === "OPTIONS") { return new Response(null, { status: 204, headers: corsHeaders, }); }
-
-		if (request.headers.get("Upgrade") === "websocket") { return stub.fetch(request); }
-
-		const body = await request.json();
-		let response = await stub.setView(body.x, body.y);
-		
-		return new Response( JSON.stringify(response), { headers: { "Content-Type": "application/json", ...corsHeaders, }} );
-		
+		return stub.fetch(request);
 	}
 };

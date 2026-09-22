@@ -18,18 +18,6 @@ export default class Client {
         socket.addEventListener("message", this.receiveMessage);
     }
 
-    receiveMessage(event) {
-        const data = JSON.parse(event.data);
-
-        if (data.type == 'setTile') {
-            this.receiveTile(data.x, data.y, data.tile);
-        } else if (data.type == 'setFloor') {
-            this.receiveFloor(data.x, data.y, data.floor);
-        } else {
-            console.log("Message from Server: ", data);
-        }
-    }
-
     async fetch(method, body) {
         try {
             const response = await fetch(this.serverURL, {
@@ -48,6 +36,18 @@ export default class Client {
     broadcast(message) {
         const data = JSON.stringify(message);
         this.socket.send(data);
+    }
+
+    receiveMessage(event) {
+        const data = JSON.parse(event.data);
+
+        if (data.type == 'setTile') {
+            this.receiveTile(data.x, data.y, data.tile);
+        } else if (data.type == 'setFloor') {
+            this.receiveFloor(data.x, data.y, data.floor);
+        } else {
+            console.log("Message from Server: ", data);
+        }
     }
 
     async fetchView() {
