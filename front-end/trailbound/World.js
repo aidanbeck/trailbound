@@ -48,7 +48,7 @@ export default class World {
     }
 
     setTile(x, y, tile) {
-        if (this.isOutOfBounds(x, y)) { return; } // todo throw error
+        if (this.isOutOfBounds(x, y)) { return -1; }
         this.tiles[y][x] = tile;
     }
 
@@ -58,7 +58,7 @@ export default class World {
     }
 
     setFloor(x, y, floor) {
-        if (this.isOutOfBounds(x, y)) { return; } // todo throw error
+        if (this.isOutOfBounds(x, y)) { return -1; } 
         this.floors[y][x] = floor;
     }
 
