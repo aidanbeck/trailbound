@@ -14,7 +14,8 @@ const tileTypes = [
     new TileType('rock.png'),
     new TileType('stump.png'),
     new TileType('chest.png'),
-    new TileType('spruceTree.png', -4, -32)
+    new TileType('spruceTree.png', -4, -32),
+    new TileType('stairs.png', 0, -32)
 ];
 
 const mobileTypes = [

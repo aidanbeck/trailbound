@@ -11,15 +11,18 @@ export default class Server {
         this.ctx = ctx;
 
         this.receiveMessage = this.receiveMessage.bind(this);
+
     }
 
     receiveMessage(event) {
         const data = JSON.parse(event.data);
 
-        if (data.type == 'setTile') {
-            this.setTile(data.x, data.y, data.tile);
-        } else if (data.type == 'setFloor') {
-            this.setFloor(data.x, data.y, data.floor);
+        switch (data.type) {
+            case "setTile":
+                this.setTile(data.x, data.y, data.tile);
+                break;
+            case "setFloor":
+                this.setFloor(data.x, data.y, data.floor);
         }
     }
 

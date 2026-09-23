@@ -37,8 +37,11 @@ const client = new Client(serverURL, socket, render);
 
 // Inventory setup
 let selectedType = 0;
-let typesCount = 7;
-document.addEventListener('keydown', () => {
+let typesCount = 8;
+document.addEventListener('keydown', cycleSelectedTileType);
+inventory.addEventListener('click', cycleSelectedTileType);
+
+function cycleSelectedTileType() {
     selectedType++;
     if (selectedType > typesCount) {
         selectedType = 0;
@@ -47,9 +50,7 @@ document.addEventListener('keydown', () => {
     } else {
         inventory.src = tileTypes[selectedType].texture.image.src;
     }
-
-});
-
+}
 
 // Interaction
 
@@ -129,11 +130,11 @@ function render(view = client.view) {
     for (let i = 0; i < GRID_SIZE; i++) {
         for (let j = 0; j < GRID_SIZE; j++) {
 
-            const tile = view.tiles[j * GRID_SIZE + i];
+            const tile = view.tiles[i * GRID_SIZE + j];
 
             const tileType = tileTypes[tile];
 
-            tileType && tileType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
+            tileType && tileType.texture.draw((j) * TILE_SIZE, (i) * TILE_SIZE, 0, ctx);
 
         }
     }
