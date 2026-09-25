@@ -119,18 +119,6 @@ function render(view = client.view) {
         }
     }
 
-    // Mobiles
-    for (let mobile of view.mobiles) {
-
-        const x = mobile.x - view.x;
-        const y = mobile.y - view.y;
-
-        if (x < 0 || x >= client.view.width || y < 0 || y >= client.view.height) { continue; } // only render within view. Eventually view will handle this itself.
-         
-        const mobileType = mobileTypes[mobile.mobileType];
-        mobileType && mobileType.texture.draw(x * TILE_SIZE, y * TILE_SIZE, 0, ctx);
-    }
-
     // Tiles
     for (let i = 0; i < GRID_SIZE; i++) {
         for (let j = 0; j < GRID_SIZE; j++) {
@@ -141,6 +129,22 @@ function render(view = client.view) {
 
             tileType && tileType.texture.draw((j) * TILE_SIZE, (i) * TILE_SIZE, 0, ctx);
 
+        }
+
+        // Mobiles
+        // This is hacky - EACH Y level of Tiles, it cycles through ALL mobiles and renders only the ones matching the Y level.
+        // Eventually, only visible mobiles should be sent to the client.
+        // These visible mobiles will then be sorted for more efficient rendering.
+        // But this will all be refactored, and it works for now.
+        for (let mobile of view.mobiles) {
+            const x = mobile.x - view.x;
+            const y = mobile.y - view.y;
+
+            if (x < 0 || x >= client.view.width || y < 0 || y >= client.view.height) { continue; } // only render within view. Eventually view will handle this itself.
+            if (y != i) { continue; } // only render mobiles on same y level of loop. Will not scale! Refactor this later.
+
+            const mobileType = mobileTypes[mobile.mobileType];
+            mobileType && mobileType.texture.draw(x * TILE_SIZE, y * TILE_SIZE, 0, ctx);
         }
     }
 }
