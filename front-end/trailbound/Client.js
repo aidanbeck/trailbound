@@ -54,6 +54,7 @@ export default class Client {
         const data = await this.fetch('POST', { type: 'setView', x: this.view.x, y: this.view.y });
         this.view.tiles = data.tiles;
         this.view.floors = data.floors;
+        this.view.mobiles = data.mobiles;
 
         this.world.update(data.tiles, data.floors, this.view);
 

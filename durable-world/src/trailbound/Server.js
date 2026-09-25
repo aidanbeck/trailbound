@@ -1,5 +1,6 @@
 import World from './World.js';
 import View from './View.js';
+import Mobile from './Mobile.js';
 
 const world = new World();
 
@@ -67,6 +68,10 @@ export default class Server {
     async setView(x, y) {
 
 		const view = new View(x, y);
+
+        const type = Math.round(Math.random()); //randomly Rachel or Stefan
+
+        this.world.addMobile(JSON.parse(JSON.stringify(new Mobile("player", x+4, y+4, type))));
 		view.update(this.world);
 	
 		return {

@@ -121,9 +121,14 @@ function render(view = client.view) {
 
     // Mobiles
     for (let mobile of view.mobiles) {
-        const mobileType = mobileTypes[mobile.mobileType];
 
-        mobileType && mobileType.texture.draw(mobile.x * TILE_SIZE, mobile.y * TILE_SIZE, 0, ctx);
+        const x = mobile.x - view.x;
+        const y = mobile.y - view.y;
+
+        if (x < 0 || x >= client.view.width || y < 0 || y >= client.view.height) { continue; } // only render within view. Eventually view will handle this itself.
+         
+        const mobileType = mobileTypes[mobile.mobileType];
+        mobileType && mobileType.texture.draw(x * TILE_SIZE, y * TILE_SIZE, 0, ctx);
     }
 
     // Tiles
