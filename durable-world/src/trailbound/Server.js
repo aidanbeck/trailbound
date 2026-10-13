@@ -114,8 +114,11 @@ class User {
 }
 
    /* Todo:
-    * Broadcast sockets trigger server to search through user views - this requires tokens to be associated with sockets? or sockets with users? or a socket/token map?
+    * Test users & usertoken alignment
+    * use token to move mobile properly in setView
+    * require token to make changes. Check if in bounds
     * State saving & loading (remove annoying lines before each change)
-    * require token to make changes
     * 
+    * Save usertoken to each socket instance
+    * use usertoken to check that an update is in bounds before sending socket to client
     */
