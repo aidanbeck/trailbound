@@ -56,7 +56,7 @@ export default class Client {
     }
 
     async createUser() {
-        const data = await this.fetch('GET', { type:'createUser'});
+        const data = await this.fetch('POST', { type:'createUser'});
         return data.token;
     }
 
