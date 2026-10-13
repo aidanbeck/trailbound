@@ -13,6 +13,7 @@ export default class Server {
 
         this.broadcast = broadcast;
         this.ctx = ctx;
+        this.load();
 
         this.receiveMessage = this.receiveMessage.bind(this);
     }
@@ -31,19 +32,33 @@ export default class Server {
         }
     }
 
+    async save() {
+        await this.ctx.storage.put("world", this.world);
+        await this.ctx.storage.put("users", this.users);
+        // should saving just be every once in a while?
+    }
+
+    async load() {
+        this.world = (await this.ctx.storage.get("world")) || this.world;
+        this.users = (await this.ctx.storage.get("users")) || this.users;
+    }
+
     async createUser() {
-        const saveWorld = (await this.ctx.storage.get("world")) || this.world;
-        const saveUsers = (await this.ctx.storage.get("users")) || this.users;
-        this.world.mobiles = saveWorld.mobiles;
-        this.users = saveUsers;
+        // const saveWorld = (await this.ctx.storage.get("world")) || this.world;
+        // const saveUsers = (await this.ctx.storage.get("users")) || this.users;
+        // this.world.mobiles = saveWorld.mobiles;
+        // this.users = saveUsers;
 
         const user = new User();
-        const userMobile = new Mobile(user.mobileId, user.view.x, user.view.y, 0);
+        const type = Math.round(Math.random()); //randomly Rachel or Stefan
+        const userMobile = new Mobile(user.mobileId, user.view.x, user.view.y, type);
         this.world.addMobile(userMobile);
         this.users.push(user);
 
-        await this.ctx.storage.put("world", this.world); // save world
-        await this.ctx.storage.put("users", this.users); // save users
+        // await this.ctx.storage.put("world", this.world); // save world
+        // await this.ctx.storage.put("users", this.users); // save users
+
+        this.save();
 
         this.broadcast({
             token: user.token
@@ -51,8 +66,8 @@ export default class Server {
     }
 
     async setTile(x, y, tile) {
-		const saveWorld = (await this.ctx.storage.get("world")) || this.world;
-		this.world.tiles = saveWorld.tiles;
+		// const saveWorld = (await this.ctx.storage.get("world")) || this.world;
+		// this.world.tiles = saveWorld.tiles;
 
         const currentTile = world.getTile(x, y);
 
@@ -61,7 +76,8 @@ export default class Server {
         }
 
 		this.world.setTile(x, y, tile);
-        await this.ctx.storage.put("world", this.world); // save world
+        // await this.ctx.storage.put("world", this.world); // save world
+        this.save();
 
         this.broadcast({
             type: "setTile",
@@ -72,11 +88,12 @@ export default class Server {
 	}
 
     async setFloor(x, y, floor) {
-		const saveWorld = (await this.ctx.storage.get("world")) || this.world;
-		this.world.floors = saveWorld.floors;
+		// const saveWorld = (await this.ctx.storage.get("world")) || this.world;
+		// this.world.floors = saveWorld.floors;
 
 		this.world.setFloor(x, y, floor);
-        await this.ctx.storage.put("world", this.world); // save world
+        // await this.ctx.storage.put("world", this.world); // save world
+        this.save();
 
         this.broadcast({
             type: "setFloor",
@@ -90,10 +107,10 @@ export default class Server {
 
 		const view = new View(x, y);
 
-        const type = Math.round(Math.random()); //randomly Rachel or Stefan
-
         this.world.addMobile(JSON.parse(JSON.stringify(new Mobile("player", x+4, y+4, type))));
 		view.update(this.world);
+
+        // this interestingly does not save the server. I will keep it this way as an experiment
 	
 		return {
 			x: view.x,
