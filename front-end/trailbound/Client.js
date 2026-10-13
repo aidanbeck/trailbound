@@ -110,3 +110,12 @@ export default class Client {
         this.world.update(data.tiles, data.floors, this.view);
     }
 }
+
+/*
+    !!!
+    Should store "userToken".
+    Usertoken should be loaded from storage.
+    If usertoken does not exist, it should send a "create new user" request.
+    The server creates a new user and sends back it's token.
+    the token is then added to the client as usertoken and saved to local storage.
+*/

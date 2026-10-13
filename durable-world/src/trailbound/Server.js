@@ -3,22 +3,26 @@ import View from './View.js';
 import Mobile from './Mobile.js';
 
 const world = new World();
+const users = [];
 
 export default class Server {
 
     constructor(broadcast, ctx) {
         this.world = world;
+        this.users = users;
+
         this.broadcast = broadcast;
         this.ctx = ctx;
 
         this.receiveMessage = this.receiveMessage.bind(this);
-
     }
 
     receiveMessage(event) {
         const data = JSON.parse(event.data);
 
         switch (data.type) {
+            case "createUser":
+                this.createUser();
             case "setTile":
                 this.setTile(data.x, data.y, data.tile);
                 break;
@@ -27,7 +31,24 @@ export default class Server {
         }
     }
 
-    // Trailbound Specific
+    async createUser() {
+        const saveWorld = (await this.ctx.storage.get("world")) || this.world;
+        const saveUsers = (await this.ctx.storage.get("users")) || this.users;
+        this.world.mobiles = saveWorld.mobiles;
+        this.users = saveUsers;
+
+        const user = new User();
+        const userMobile = new Mobile(user.mobileId, user.view.x, user.view.y, 0);
+        this.world.addMobile(userMobile);
+        this.users.push(user);
+
+        await this.ctx.storage.put("world", this.world); // save world
+        await this.ctx.storage.put("users", this.users); // save users
+
+        this.broadcast({
+            userToken: user.token
+        });
+    }
 
     async setTile(x, y, tile) {
 		const saveWorld = (await this.ctx.storage.get("world")) || this.world;
@@ -84,4 +105,17 @@ export default class Server {
 	}
 }
 
-// This will eventually replace or be used by a lot of the DurableWorld class, most of that is placeholders for now.
+class User {
+    constructor() {
+        this.view = new View();
+        this.mobileId = crypto.randomUUID();
+        this.token = crypto.randomUUID();
+    }
+}
+
+   /* Todo:
+    * Broadcast sockets trigger server to search through user views - this requires tokens to be associated with sockets? or sockets with users? or a socket/token map?
+    * State saving & loading (remove annoying lines before each change)
+    * require token to make changes
+    * 
+    */
