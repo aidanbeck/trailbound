@@ -46,7 +46,7 @@ export default class Server {
         await this.ctx.storage.put("users", this.users); // save users
 
         this.broadcast({
-            userToken: user.token
+            token: user.token
         });
     }
 

@@ -10,6 +10,11 @@ export default class Client {
         
         this.world = new World();
         this.view = new View();
+        this.userToken = localStorage.getItem("trailbound:userToken");
+
+        if (!this.userToken) {
+            this.userToken = this.createUser();
+        }
 
         this.view.update(this.world);
         this.fetchView();
@@ -48,6 +53,11 @@ export default class Client {
         } else {
             console.log("Message from Server: ", data);
         }
+    }
+
+    async createUser() {
+        const data = await this.fetch('GET', { type:'createUser'});
+        return data.token;
     }
 
     async fetchView() {
@@ -110,12 +120,3 @@ export default class Client {
         this.world.update(data.tiles, data.floors, this.view);
     }
 }
-
-/*
-    !!!
-    Should store "userToken".
-    Usertoken should be loaded from storage.
-    If usertoken does not exist, it should send a "create new user" request.
-    The server creates a new user and sends back it's token.
-    the token is then added to the client as usertoken and saved to local storage.
-*/
