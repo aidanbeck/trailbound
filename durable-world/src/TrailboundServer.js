@@ -13,12 +13,13 @@ export default class TrailboundServer {
         this.save = save;
         this.load = load;
 
-        this.world = this.load("world") || new World();
-        this.users = this.load("users") || [];
+        this.world = new World(); //this.load("world") || new World();
+        this.users = []; //this.load("users") || [];
 
 
         // add handlers
         this.switchboard.addHandler("createUser", this.createUser);
+        this.switchboard.addHandler("setView", this.setView);
         this.switchboard.addHandler("setTile", this.setTile);
         this.switchboard.addHandler("setFloor", this.setFloor);
     }
@@ -103,7 +104,7 @@ export default class TrailboundServer {
 }
 
 class User {
-    constructor() {
+    constructor(sessionId) {
         this.view = new View();
         this.mobileId = crypto.randomUUID();
         this.userSessionId = sessionId;
@@ -114,3 +115,4 @@ class User {
 // users can be a map that is parsed upon saving/loading
 // change usermobile testificate for actually finding the mobile and moving it
 // on close, you can also find the mobile and delete it
+// world, view, mobile should be in its own folder in root alongside easel, shared by client and server
