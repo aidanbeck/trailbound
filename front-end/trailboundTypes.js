@@ -1,4 +1,4 @@
-import { TileType, FloorType, MobileType } from './trailbound/Types.js';
+import { TileType, FloorType, MobileType } from '../trailbound/Types.js';
 
 const floorTypes = [
     new FloorType('grass.bmp'),

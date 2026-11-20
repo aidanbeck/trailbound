@@ -1,8 +1,8 @@
 import Messenger from '../easel/Messenger.js';
 import Theatre from '../easel/Theatre.js';
 
-import World from './trailbound/World.js';
-import View from './trailbound/View.js';
+import World from '../trailbound/World.js';
+import View from '../trailbound/View.js';
 
 import { LAN, TILE_SIZE, GRID_SIZE } from './config.js';
 import { tileTypes, floorTypes, mobileTypes } from './trailboundTypes.js';

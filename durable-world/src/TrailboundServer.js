@@ -1,8 +1,8 @@
 import Switchboard from '../../easel/Switchboard.js';
 
-import World from './trailbound/World.js';
-import View from './trailbound/View.js';
-import Mobile from './trailbound/Mobile.js';
+import World from '../../trailbound/World.js';
+import View from '../../trailbound/View.js';
+import Mobile from '../../trailbound/Mobile.js';
 
 export default class TrailboundServer {
 
