@@ -53,13 +53,9 @@ export default class TrailboundServer {
                 mobileId = user.mobileId;
             }
         }
-        for (const mobile of this.world.mobiles) {
-            if (mobile.id == mobileId) {
-                mobile.x = x + 4;
-                mobile.y = y + 4;
-                console.log(mobile);
-            }
-        }
+        const mobile = this.world.getMobile(mobileId);
+        mobile.x = x + 4;
+        mobile.y = y + 4;
 
         const view = new View(x, y);
 		view.update(this.world);

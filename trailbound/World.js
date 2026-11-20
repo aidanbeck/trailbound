@@ -8,8 +8,7 @@ export default class World {
         
         this.tiles = []; // 256x256 array: tree, boulder, bush, tall grass, wall
         this.floors = []; // 256x256 array: grass, dirt, water, stone, wood floor
-        this.mobiles = []; // dynamic array: hiker, enemy, rock, stick, tools, items
-        this.freeMobileIndexes = []; // dynamic array: available indexes in mobile
+        this.mobiles = {}; // dynamic array: hiker, enemy, rock, stick, tools, items
 
         this.width = width;
         this.height = height;
@@ -62,16 +61,14 @@ export default class World {
         this.floors[y][x] = floor;
     }
 
-    getMobile(index) {
-        return this.mobiles[index];
+    getMobile(id) {
+        return this.mobiles[id] || null;
     }
     addMobile(mobile) {
-        this.mobiles.push(mobile);
-        // todo use free mobile indexes
+        this.mobiles[mobile.id] = mobile;
     }
-    removeMobile(index) {
-        this.mobiles[index] = null;
-        this.freeMobileIndexes.push(index);
+    removeMobile(id) {
+        delete this.mobiles[id];
     }
 
     update(tiles, floors, view) {
@@ -84,5 +81,7 @@ export default class World {
             this.setTile(x, y, tiles[i]);
             this.setFloor(x, y, floors[i]);
         }
+
+        this.mobiles = view.mobiles;
     }
 }

@@ -199,7 +199,9 @@ function render(view) { // This can be optimized by drawing to a buffer
         // Eventually, only visible mobiles should be sent to the client.
         // These visible mobiles will then be sorted for more efficient rendering.
         // But this will all be refactored, and it works for now.
-        for (let mobile of view.mobiles) {
+        for (const mobileId in view.mobiles) {
+            const mobile = view.mobiles[mobileId];
+            
             const x = mobile.x - view.x;
             const y = mobile.y - view.y;
 
