@@ -1,10 +1,5 @@
 import { Point, Rectangle } from './Shape.js';
 
-let RENDER_CARD_BORDERS = false;
-function toggleDebugBorders() {
-    RENDER_CARD_BORDERS = !RENDER_CARD_BORDERS;
-}
-
 class Card extends Rectangle {
     constructor(x, y, w, h, texture = null, onClick = null, onHover = null, onRender = null ) {
             
@@ -20,12 +15,12 @@ class Card extends Rectangle {
 }
 
 class Deck {
-
     constructor(texture) {
         this.texture = texture;
         this.frame = 0;
-
         this.cards = [];
+
+        this.renderBorders = false; // for debugging
     }
 
     render(ctx) {
@@ -35,16 +30,13 @@ class Deck {
         for (let card of this.cards) {
             card.texture && card.texture.draw(card.x, card.y, card.frame, ctx);
             card.onRender && card.onRender(ctx);
+            this.renderBorders && this.drawCardBorder(ctx, card);
         }
-
-        RENDER_CARD_BORDERS && this.renderCardBorders(ctx);
     }
 
-    renderCardBorders(ctx) {
+    drawCardBorder(ctx, card) {
         ctx.strokeStyle = "red";
-        for (let card of this.cards) {
-            ctx.strokeRect(card.x, card.y, card.w, card.h);
-        }
+        ctx.strokeRect(card.x, card.y, card.w, card.h);
     }
 
     click(x, y, ctx) {
@@ -59,7 +51,7 @@ class Deck {
     }
 
     hover(x, y, ctx) {
-        // document.body.style.cursor = `url('./art/ui/hand.png') -16 -16, auto`;
+        
         let hoverPoint = new Point(x, y);
 
         for (let card of this.cards) {
@@ -71,4 +63,4 @@ class Deck {
 
 }
 
-export { Card, Deck, toggleDebugBorders }
+export { Card, Deck }

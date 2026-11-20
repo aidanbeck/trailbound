@@ -1,4 +1,4 @@
-import Theatre from './easel/Theatre.js';
+import Theatre from '../easel/Theatre.js';
 import Client from './trailbound/Client.js';
 import { tileTypes, floorTypes, mobileTypes } from './trailboundTypes.js';
 import { LAN, TILE_SIZE, GRID_SIZE } from './config.js';
@@ -25,8 +25,8 @@ window.onload = () => { theatre.redraw(); }
 
 let serverURL, socket;
 if (LAN) {
-    serverURL = 'http://127.0.0.1:8787/';
-    socket = new WebSocket('ws://127.0.0.1:8787/websocket');
+    serverURL = 'https://solid-palm-tree-jjj6vvj77v6q3p44j-8787.app.github.dev/'; //'http://127.0.0.1:8787/';
+    socket = new WebSocket('solid-palm-tree-jjj6vvj77v6q3p44j-8787.app.github.dev/'); //new WebSocket('ws://127.0.0.1:8787/websocket');
 } else {
     serverURL = 'https://durable-world.aidanbeck.workers.dev/';
     socket = new WebSocket("wss://durable-world.aidanbeck.workers.dev/websocket");
