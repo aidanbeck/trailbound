@@ -29,7 +29,7 @@ export default class TrailboundServer {
 
         const user = new User(sessionId);
         const type = Math.round(Math.random()); //randomly Rachel or Stefan
-        const userMobile = new Mobile(user.mobileId, user.view.x, user.view.y, type);
+        const userMobile = new Mobile(user.mobileId, user.view.x+4, user.view.y+4, type);
 
         this.world.addMobile(userMobile);
         this.users.push(user);
@@ -46,8 +46,20 @@ export default class TrailboundServer {
         const x = data.x;
         const y = data.y;
 
-        const TESTIFICATE = new Mobile("TESTIFICATE", x+4, y+4, 1);
-        this.world.addMobile(TESTIFICATE);
+        // hacky hacky hacky, bad bad bad
+        let mobileId;
+        for(const user of this.users) {
+            if (user.sessionId == sessionId) {
+                mobileId = user.mobileId;
+            }
+        }
+        for (const mobile of this.world.mobiles) {
+            if (mobile.id == mobileId) {
+                mobile.x = x + 4;
+                mobile.y = y + 4;
+                console.log(mobile);
+            }
+        }
 
         const view = new View(x, y);
 		view.update(this.world);
@@ -107,7 +119,7 @@ class User {
     constructor(sessionId) {
         this.view = new View();
         this.mobileId = crypto.randomUUID();
-        this.userSessionId = sessionId;
+        this.sessionId = sessionId;
     }
 }
 
