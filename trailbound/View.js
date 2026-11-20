@@ -32,6 +32,11 @@ export default class View {
         this.floors[index] = floor;
     }
 
+    moveMobile(id, x, y) {
+        this.mobiles[id].x = x;
+        this.mobiles[id].y = y;
+    }
+
     update(world) {
 
         // clear arrays

@@ -68,6 +68,13 @@ export default class TrailboundServer {
 			tiles: view.tiles,
 			mobiles: view.mobiles
         });
+
+        this.switchboard.sendMessageToAll({
+            type: "moveMobile",
+            id: mobile.id,
+            x: mobile.x,
+            y: mobile.y
+        });
     }
 
     setTile = (data) => {

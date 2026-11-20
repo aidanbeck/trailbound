@@ -70,6 +70,10 @@ export default class World {
     removeMobile(id) {
         delete this.mobiles[id];
     }
+    moveMobile(id, x, y) {
+        this.mobiles[id].x = x;
+        this.mobiles[id].y = y;
+    }
 
     update(tiles, floors, view) {
 

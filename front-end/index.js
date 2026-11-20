@@ -59,6 +59,18 @@ messenger.addHandler("setFloor", (data) => {
     render(view);
 });
 
+
+messenger.addHandler("moveMobile", (data) => {
+    
+    const id = data.id;
+    const x = data.x;
+    const y = data.y;
+
+    world.moveMobile(id, x, y);
+    view.moveMobile(id, x, y);
+    render(view);
+});
+
 function setView(x, y) {
     messenger.sendMessage({ type: 'setView', x: x, y: y });
 }
