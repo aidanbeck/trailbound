@@ -10,9 +10,9 @@ import { tileTypes, floorTypes, mobileTypes } from './trailboundTypes.js';
 // Trailbound Messenger
 let messenger;
 if (LAN) {
-    messenger = new Messenger("https://solid-palm-tree-jjj6vvj77v6q3p44j-8787.app.github.dev", "wss://solid-palm-tree-jjj6vvj77v6q3p44j-8787.app.github.dev");
+    // messenger = new Messenger("https://trailbound.us/api", "wss://trailbound.us/api");
 } else {
-    messenger = new Messenger("https://durable-world.aidanbeck.workers.dev", "wss://durable-world.aidanbeck.workers.dev");
+    messenger = new Messenger("https://trailbound.us/api", "wss://trailbound.us/api");
 }
 
 const view = new View();
