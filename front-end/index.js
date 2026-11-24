@@ -10,16 +10,14 @@ import { tileTypes, floorTypes, mobileTypes } from './trailboundTypes.js';
 // Trailbound Messenger
 let messenger;
 if (LAN) {
-    // messenger = new Messenger("https://trailbound.us/api", "wss://trailbound.us/api");
+    // messenger = new Messenger("https://localhost:8787", "wss://localhost:8787");
+    messenger = new Messenger("https://solid-palm-tree-jjj6vvj77v6q3p44j-8787.app.github.dev/", "wss://solid-palm-tree-jjj6vvj77v6q3p44j-8787.app.github.dev/");
 } else {
     messenger = new Messenger("https://trailbound.us/api", "wss://trailbound.us/api");
 }
 
 const view = new View();
 const world = new World();
-
-// let userToken = localStorage.getItem("trailbound:userToken");
-// if (!userToken) { userToken = createUser(); }
 
 messenger.connectionHandler = () => {
 	messenger.sendMessage({ type: "createUser" });
@@ -59,9 +57,7 @@ messenger.addHandler("setFloor", (data) => {
     render(view);
 });
 
-
 messenger.addHandler("moveMobile", (data) => {
-    
     const id = data.id;
     const x = data.x;
     const y = data.y;
@@ -179,49 +175,48 @@ function cycleSelectedTileType() {
 }
 
 // Rendering
-function render(view) { // This can be optimized by drawing to a buffer
+const width = theatre.canvas.width;
+const height = theatre.canvas.height;
+const floorBuffer = new OffscreenCanvas(width, height);
+const floorCtx = floorBuffer.getContext("2d");
+const tileBuffer = new OffscreenCanvas(width, height);
+const tileCtx = tileBuffer.getContext("2d");
+function render(view) {
 
-    // Floors
     for (let i = 0; i < GRID_SIZE; i++) {
         for (let j = 0; j < GRID_SIZE; j++) {
 
-            const floor = view.floors[j * GRID_SIZE + i];
+            const index = j * GRID_SIZE + i;
 
+            const floor = view.floors[index];
             const floorType = floorTypes[floor];
+            floorType && floorType.texture.draw(i*TILE_SIZE, j*TILE_SIZE, 0, floorCtx);
 
-            floorType && floorType.texture.draw((i) * TILE_SIZE, (j) * TILE_SIZE, 0, ctx);
+            const tile = view.tiles[index];
+            const tileType = tileTypes[tile];
+            tileType && tileType.texture.draw(i*TILE_SIZE, j*TILE_SIZE, 0, tileCtx);
 
+            renderMobiles(view, i, tileCtx);
         }
     }
 
-    // Tiles
-    for (let i = 0; i < GRID_SIZE; i++) {
-        for (let j = 0; j < GRID_SIZE; j++) {
+    ctx.drawImage(floorBuffer.transferToImageBitmap(), 0, 0);
+    ctx.drawImage(tileBuffer.transferToImageBitmap(), 0, 0);
+}
 
-            const tile = view.tiles[i * GRID_SIZE + j];
+// Hacky, will be refactored as mobiles change. Good enough for now.
+function renderMobiles(view, i, tileCtx) {
+    for (const mobileId in view.mobiles) {
+                
+        const mobile = view.mobiles[mobileId];
+        const mobileX = mobile.x - view.x;
+        const mobileY = mobile.y - view.y;
+        const mobileType = mobileTypes[mobile.mobileType];
 
-            const tileType = tileTypes[tile];
-
-            tileType && tileType.texture.draw((j) * TILE_SIZE, (i) * TILE_SIZE, 0, ctx);
-
-        }
-
-        // Mobiles
-        // This is hacky - EACH Y level of Tiles, it cycles through ALL mobiles and renders only the ones matching the Y level.
-        // Eventually, only visible mobiles should be sent to the client.
-        // These visible mobiles will then be sorted for more efficient rendering.
-        // But this will all be refactored, and it works for now.
-        for (const mobileId in view.mobiles) {
-            const mobile = view.mobiles[mobileId];
-            
-            const x = mobile.x - view.x;
-            const y = mobile.y - view.y;
-
-            if (x < 0 || x >= view.width || y < 0 || y >= view.height) { continue; } // only render within view. Eventually view will handle this itself.
-            if (y != i) { continue; } // only render mobiles on same y level of loop. Will not scale! Refactor this later.
-
-            const mobileType = mobileTypes[mobile.mobileType];
-            mobileType && mobileType.texture.draw(x * TILE_SIZE, y * TILE_SIZE, 0, ctx);
-        }
+        // Render only if on the same y level as the tile and within screen width.
+        if (mobileX < 0 || mobileX >= view.width) { continue; }
+        if (mobileY != i) { continue; }
+                
+        mobileType && mobileType.texture.draw(mobileX * TILE_SIZE, mobileY * TILE_SIZE, 0, tileCtx);
     }
 }

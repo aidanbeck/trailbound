@@ -17,12 +17,11 @@ const tileTypes = [
     new TileType('spruceTree.png', -4, -32),
     new TileType('stairs.png', 0, -32)
 ];
-tileTypes[-1] =     new TileType('spruceTree.png', -4, -32);
+tileTypes[-1] = new TileType('spruceTree.png', -4, -32);
 
 const mobileTypes = [
     new MobileType('rachel.png'),
     new MobileType('stefan.png')
-
 ];
 
 export { tileTypes, floorTypes, mobileTypes }
