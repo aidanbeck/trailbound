@@ -8,14 +8,12 @@ export default class TrailboundServer {
 
     constructor(save, load) {
 
-
         this.switchboard = new Switchboard();
         this.save = save;
         this.load = load;
 
-        this.world = new World(); //this.load("world") || new World();
-        this.users = []; //this.load("users") || [];
-
+        this.world = new World(); // todo: load world & users
+        this.users = new Map();
 
         // add handlers
         this.switchboard.addHandler("createUser", this.createUser);
@@ -25,17 +23,20 @@ export default class TrailboundServer {
     }
 
     createUser = (data) => {
+
         const sessionId = data.sessionId;
-
         const user = new User(sessionId);
-        const type = Math.round(Math.random()); //randomly Rachel or Stefan
-        const userMobile = new Mobile(user.mobileId, user.view.x+4, user.view.y+4, type);
 
+        const id = user.mobileId;
+        const x = user.view.x + 4; // center of view
+        const y = user.view.y + 4; // center of view
+        const type = Math.round(Math.random()); // 0 (Rachel) or 1 (Stefan)
+
+        const userMobile = new Mobile(id, x, y, type);
         this.world.addMobile(userMobile);
-        this.users.push(user);
+        this.users.set(sessionId, user);
 
         this.switchboard.sendMessage(sessionId, {type: "createUser", user: user});
-
         this.save("users", this.users);
         this.save("world", this.world);
     }
@@ -43,21 +44,16 @@ export default class TrailboundServer {
     setView = (data) => {
 
         const sessionId = data.sessionId;
-        const x = data.x;
-        const y = data.y;
+        const viewX = data.x;
+        const viewY = data.y;
 
-        // hacky hacky hacky, bad bad bad
-        let mobileId;
-        for(const user of this.users) {
-            if (user.sessionId == sessionId) {
-                mobileId = user.mobileId;
-            }
-        }
+        const mobileId = this.users.get(sessionId).mobileId;
         const mobile = this.world.getMobile(mobileId);
-        mobile.x = x + 4;
-        mobile.y = y + 4;
 
-        const view = new View(x, y);
+        mobile.x = viewX + 4; // center of view
+        mobile.y = viewY + 4; // center of view
+
+        const view = new View(viewX, viewY);
 		view.update(this.world);
 
         this.switchboard.sendMessage(sessionId, {
@@ -68,7 +64,6 @@ export default class TrailboundServer {
 			tiles: view.tiles,
 			mobiles: view.mobiles
         });
-
         this.switchboard.sendMessageToAll({
             type: "moveMobile",
             id: mobile.id,
@@ -83,11 +78,11 @@ export default class TrailboundServer {
         const y = data.y;
         const tile = data.tile;
 
-        const currentTile = this.world.getTile(x, y);
-
-        if (data.tile == currentTile) { return; }
+        // tile is already set
+        if (tile == this.world.getTile(x, y)) { return; }
 
         this.world.setTile(x, y, tile);
+
         this.switchboard.sendMessageToAll({
             type: "setTile",
             x: x,
@@ -103,11 +98,11 @@ export default class TrailboundServer {
         const y = data.y;
         const floor = data.floor;
 
-        const currentFloor = this.world.getFloor(x, y);
-
-        if (data.floor == currentFloor) { return; }
+        // floor is already set
+        if (floor == this.world.getFloor(x, y)) { return; }
 
         this.world.setFloor(x, y, floor);
+
         this.switchboard.sendMessageToAll({
             type: "setFloor",
             x: x,
@@ -126,8 +121,4 @@ class User {
     }
 }
 
-// saving does not have to be as often. multiple events can designate a save should happen soon, and it will save if anything has changed on a timer.
-// users can be a map that is parsed upon saving/loading
-// change usermobile testificate for actually finding the mobile and moving it
 // on close, you can also find the mobile and delete it
-// world, view, mobile should be in its own folder in root alongside easel, shared by client and server
