@@ -73,31 +73,49 @@ function setView(x, y) {
 }
 
 function setTile(x, y, tile) {
-        if (world.getTile(x, y) == tile) { return; }
-    
-        messenger.sendMessage({
-            type: "setTile",
-            x: x,
-            y: y,
-            tile: tile
-        });
+    if (world.getTile(x, y) == tile) { return; }
 
-        world.setTile(x, y, tile);
-        view.setTile(x, y, tile);
-        render(view);
-    }
+    world.setTile(x, y, tile);
+    view.setTile(x, y, tile);
+    render(view);
+
+    messenger.sendMessage({
+        type: "setTile",
+        x: x,
+        y: y,
+        tile: tile
+    });
+}
 
 function setFloor(x, y, floor) {
     if (world.getFloor(x,y) == floor) { return; }
+
+    world.setFloor(x, y, floor);
+    view.setFloor(x, y, floor);
+    render(view);
+
     messenger.sendMessage({
         type: "setFloor",
         x: x,
         y: y,
         floor: floor
     });
-    world.setFloor(x, y, floor);
-    view.setFloor(x, y, floor);
-    render(view);
 }
 
-export { view, setView, setTile, setFloor };
+function moveMobile(id, x, y) {
+    const mobile = world.getMobile(id);
+    if (mobile.x == x && mobile.y == y) { return; }
+
+    world.moveMobile(id, x, y);
+    view.moveMobile(id, x, y);
+    render(view);
+
+    messenger.sendMessage({
+        type: "moveMobile",
+        id: id,
+        x: x,
+        y: y
+    });
+}
+
+export { view, setView, setTile, setFloor, moveMobile };

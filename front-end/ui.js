@@ -5,7 +5,7 @@
 import Theatre from '../easel/Theatre.js';
 import { tileTypes, floorTypes, mobileTypes } from './trailboundTypes.js';
 import { TILE_SIZE, GRID_SIZE } from './config.js';
-import { view, setView, setTile, setFloor } from './index.js';
+import { view, setView, setTile, setFloor, moveMobile } from './index.js';
 
 // Theatre & UI
 const canvasElement = document.getElementById("theatre");

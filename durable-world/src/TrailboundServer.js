@@ -20,6 +20,7 @@ export default class TrailboundServer {
         this.switchboard.addHandler("setView", this.setView);
         this.switchboard.addHandler("setTile", this.setTile);
         this.switchboard.addHandler("setFloor", this.setFloor);
+        this.switchboard.addHandler("moveMobile", this.moveMobile);
     }
 
     createUser = (data) => {
@@ -110,6 +111,26 @@ export default class TrailboundServer {
             floor: floor
         });
         this.save("world", this.world);
+    }
+
+    moveMobile = (data) => {
+
+        const id = data.id;
+        const x = data.x;
+        const y = data.y;
+
+        // mobile is already moved
+        const mobile = this.world.getMobile(id);
+        if (mobile.x == x && mobile.y == y) { return; }
+
+        this.world.moveMobile(id, x, y);
+
+        this.switchboard.sendMessageToAll({
+            type: "moveMobile",
+            id: id,
+            x: x,
+            y: y
+        });
     }
 }
 
