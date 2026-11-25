@@ -5,7 +5,8 @@
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
-    "start": "wrangler dev"
+    "start": "wrangler dev",
+    "test": "cd src && npx wrangler dev & cd .. && python3 -m http.server 2>durable-world/http-log"
   },
   "devDependencies": {
     "wrangler": "^4.135.0"
