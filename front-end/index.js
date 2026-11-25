@@ -186,18 +186,17 @@ function render(view) {
     for (let i = 0; i < GRID_SIZE; i++) {
         for (let j = 0; j < GRID_SIZE; j++) {
 
-            const index = j * GRID_SIZE + i;
+            const index = i * GRID_SIZE + j;
 
             const floor = view.floors[index];
             const floorType = floorTypes[floor];
-            floorType && floorType.texture.draw(i*TILE_SIZE, j*TILE_SIZE, 0, floorCtx);
+            floorType && floorType.texture.draw(j*TILE_SIZE, i*TILE_SIZE, 0, floorCtx);
 
             const tile = view.tiles[index];
             const tileType = tileTypes[tile];
-            tileType && tileType.texture.draw(i*TILE_SIZE, j*TILE_SIZE, 0, tileCtx);
-
-            renderMobiles(view, i, tileCtx);
+            tileType && tileType.texture.draw(j*TILE_SIZE, i*TILE_SIZE, 0, tileCtx);
         }
+        renderMobiles(view, i, tileCtx);
     }
 
     ctx.drawImage(floorBuffer.transferToImageBitmap(), 0, 0);

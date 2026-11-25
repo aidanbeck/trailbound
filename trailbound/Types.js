@@ -1,9 +1,7 @@
 import Texture from '../easel/Texture.js';
 
-const TILE_SIZE = 16; // magic number!
-
 function getTexture(imageSrc, offsetX = 0, offsetY = 0) {
-    return new Texture(`./front-end/images/${imageSrc}`, TILE_SIZE, offsetX, offsetY);
+    return new Texture(`./front-end/images/${imageSrc}`, null, offsetX, offsetY);
 }
 
 class TileType {
