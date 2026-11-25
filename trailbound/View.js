@@ -7,7 +7,7 @@ export default class View {
 
         this.tiles = [];
         this.floors = [];
-        this.mobiles = [];
+        this.mobiles = {};
     }
 
     setView(x, y) {

@@ -20,24 +20,33 @@ theatre.canvas.style.maxHeight = '100vh';
 theatre.redraw = () => { render(view); };
 window.onload = () => { theatre.redraw(); }
 
-// Interaction
-
-let mouseButton = -1;
-
+// Listeners
 theatre.addEventListener("pointerdown", (e) => pointerDown(e) );
 theatre.addEventListener("pointerup",   (e) => pointerUp(e));
 theatre.addEventListener("dblclick",    (e) => pointerUp(e));
 theatre.addEventListener("pointermove", (e) => pointerMove(e));
 theatre.addEventListener("contextmenu", (e) => e.preventDefault());
+document.addEventListener('keydown', cycleSelectedTileType);
+inventory.addEventListener('click', cycleSelectedTileType);
 
-function getTileCoordinate(x, y, cellSize) {
-    return {
-        x: view.x + Math.floor(x / cellSize),
-        y: view.y + Math.floor(y / cellSize)
+// Interaction State
+let mouseButton = -1;
+let selectedMobile = null;
+let selectedType = 0;
+let typesCount = 8;
+
+// Interaction Logic
+function pointerDown(e) {
+    let {x, y} = theatre.getEventCoordinates(e);
+    let tile = getTileCoordinate(x, y, TILE_SIZE);
+
+    for (const mobileId in view.mobiles) {
+        const mobile = view.mobiles[mobileId];
+        if (mobile.x == tile.x && mobile.y == tile.y) {
+            selectedMobile = mobile.id;
+        }
     }
-}
 
-function pointerDown(e) { 
     mouseButton = e.button;
     pointerMove(e);
 }
@@ -53,32 +62,42 @@ function pointerUp(e) {
         setView(tile.x - offsetX, tile.y - offsetY);
     }
     mouseButton = -1;
+    selectedMobile = null;
 }
 
 function pointerMove(e) {
     let {x, y} = theatre.getEventCoordinates(e);
-    const tile = getTileCoordinate(x, y, TILE_SIZE);
+
+    let tile = getTileCoordinate(x, y, TILE_SIZE);
+
+    if (selectedMobile) {
+        moveMobile(selectedMobile, tile.x, tile.y);
+        return;
+    }
 
     if (mouseButton == 0) {
         setTile(tile.x, tile.y, selectedType);
     }
 }
 
-// Select Tile
-let selectedType = 0;
-let typesCount = 8;
-document.addEventListener('keydown', cycleSelectedTileType);
-inventory.addEventListener('click', cycleSelectedTileType);
 function cycleSelectedTileType() {
     selectedType++;
     if (selectedType > typesCount) {
         selectedType = 0;
         inventory.src = "front-end/images/rachel.png";
-
     } else {
         inventory.src = tileTypes[selectedType].texture.image.src;
     }
 }
+
+// Helpers
+function getTileCoordinate(x, y, cellSize) {
+    return {
+        x: view.x + Math.floor(x / cellSize),
+        y: view.y + Math.floor(y / cellSize)
+    }
+}
+
 
 // Rendering
 const width = theatre.canvas.width;
