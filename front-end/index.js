@@ -25,6 +25,7 @@ messenger.connectionHandler = () => {
 }
 
 messenger.addHandler("createUser", (data) => {
+    view.mobileId = data.user.mobileId;
     messenger.sendMessage({ type: "setView", x: view.x, y: view.y });
 });
 

@@ -8,6 +8,8 @@ export default class View {
         this.tiles = [];
         this.floors = [];
         this.mobiles = {};
+
+        this.mobileId = null;
     }
 
     setView(x, y) {

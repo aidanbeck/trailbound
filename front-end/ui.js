@@ -52,17 +52,16 @@ function pointerDown(e) {
 }
 
 function pointerUp(e) {
-    if (mouseButton == 2 || event.type == 'dblclick') {
-        let {x, y} = theatre.getEventCoordinates(e);
-        let tile = getTileCoordinate(x, y, TILE_SIZE);
-
+    if (selectedMobile == view.mobileId) {
+        const mobile = view.mobiles[selectedMobile];
         const offsetX = Math.floor(view.width / 2);
         const offsetY = Math.floor(view.height / 2);
 
-        setView(tile.x - offsetX, tile.y - offsetY);
+        setView(mobile.x - offsetX, mobile.y - offsetY);    
     }
-    mouseButton = -1;
+
     selectedMobile = null;
+    mouseButton = -1;
 }
 
 function pointerMove(e) {
